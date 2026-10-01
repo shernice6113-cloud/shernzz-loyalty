@@ -1,1 +1,95 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#08070a"><title>Shernzz Loyalty V0.3.1</title><link rel="stylesheet" href="style.css"></head><body><main id="app"></main><script src="app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shernzz Loyalty</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+  <main class="app-shell">
+
+    <section class="join-card">
+
+      <div class="eyebrow">LOYALTY REWARDS</div>
+
+      <h1>
+        Join the Shernzz<br>
+        family 💕
+      </h1>
+
+      <p class="intro">
+        Shop. Create. Get rewarded. Collect 10 hearts and
+        unlock exclusive Shernzz rewards.
+      </p>
+
+      <form id="joinForm">
+
+        <label for="firstName">First name</label>
+        <input
+          id="firstName"
+          type="text"
+          placeholder="Your name"
+          required
+        >
+
+        <label for="email">Email address</label>
+        <input
+          id="email"
+          type="email"
+          placeholder="Your email"
+          required
+        >
+
+        <button type="submit" class="primary-button">
+          Create my loyalty card
+        </button>
+
+      </form>
+
+      <button id="staffButton" class="staff-button">
+        Staff dashboard
+      </button>
+
+      <p id="message"></p>
+
+    </section>
+
+    <section id="loyaltyCard" class="loyalty-card hidden">
+
+      <div class="eyebrow">SHERNZZ LOYALTY</div>
+
+      <h2 id="welcomeName">Hey 💕</h2>
+
+      <p>Your rewards</p>
+
+      <div id="hearts" class="hearts">
+        ♡ ♡ ♡ ♡ ♡<br>
+        ♡ ♡ ♡ ♡ ♡
+      </div>
+
+      <div class="reward">
+        <strong>5 hearts</strong>
+        <span>25% OFF</span>
+      </div>
+
+      <div class="reward">
+        <strong>10 hearts</strong>
+        <span>50% OFF</span>
+      </div>
+
+      <p id="stampCount">0 / 10 hearts collected</p>
+
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
