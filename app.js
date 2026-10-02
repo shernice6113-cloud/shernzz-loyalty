@@ -240,13 +240,17 @@ async function loadCustomerHistory(customer) {
     .select("id, activity_type, description, created_at")
     .eq("customer_id", customer.id)
     .eq("business_id", customer.business_id)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+  .limit(5);
 
   if (error) {
     console.error("Could not load customer history:", error);
     return "<p>Couldn't load history.</p>";
   }
 
+ 
+
+  
   if (!history || history.length === 0) {
     return "<p>No activity yet.</p>";
   }
@@ -264,6 +268,36 @@ async function loadCustomerHistory(customer) {
     `;
   }).join("");
 }
+
+async function loadFullCustomerHistory(customer) {
+  const { data: history, error } = await supabaseClient
+    .from("activity_history")
+    .select("id, activity_type, description, created_at")
+    .eq("customer_id", customer.id)
+    .eq("business_id", customer.business_id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Could not load full customer history:", error);
+    return "<p>Could not load history.</p>";
+  } (!history || history.length === 0) {
+    return "<p>No activity yet.</p>";
+  }
+
+  return history
+    .map((item) => {
+      const date = new Date(item.created_at).toLocaleString();
+
+      return `
+        <div class="history-item">
+          <strong>${item.description || item.activity_type}</strong>
+          <small>${date}</small>
+        </div>
+      `;
+    })
+    .join("");
+}
+
 
 async function openCustomerDetail(customer) {
   customerList.classList.add("hidden");
@@ -294,12 +328,45 @@ async function openCustomerDetail(customer) {
       <button id="addHeartButton" class="staff-button">+ Add Heart 💕</button>
       <button id="removeHeartButton" class="staff-button">− Remove Heart</button>
       <div class="customer-history">
-  <h3>History</h3>
+  <div class="customer-history">
+  <h3>Recent History</h3>
   ${historyHtml}
+  <button type="button" id="viewFullHistoryButton" class="staff-button">
+    View Full History
+  </button>
 </div>
     </div>
   `;
   const staffRewardStatus = document.getElementById("staffRewardStatus");
+
+  const viewFullHistoryButton = document.getElementById("viewFullHistoryButton");
+
+if (viewFullHistoryButton) {
+  viewFullHistoryButton.addEventListener("click", async () => {
+    const fullHistoryHtml = await loadFullCustomerHistory(customer);
+
+    staffCustomerDetail.innerHTML = `
+      <div class="customer-detail-card">
+        <h3>${customer.first_name || "Customer"} — Full History</h3>
+
+        <div class="customer-history">
+          ${fullHistoryHtml}
+        </div>
+
+        <button type="button" id="backToCustomerButton" class="staff-button">
+          ← Back to Customer
+        </button>
+      </div>
+    `;
+
+    const backToCustomerButton =
+      document.getElementById("backToCustomerButton");
+
+    backToCustomerButton.addEventListener("click", () => {
+      openCustomerDetail(customer);
+    });
+  });
+}
  if (
   (stamps >= 10 && customer.reward_status === "reward_10_redeemed") ||
   (stamps >= 5 &&
