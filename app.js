@@ -134,10 +134,10 @@ joinForm.addEventListener("submit", async (event) => {
   );
 });
 
-const staffDashboard = document.getElementById("staffDashboard");
+
 const customerSearch = document.getElementById("customerSearch");
-const customerList = document.getElementById("customerList");
-const closeStaffDashboard = document.getElementById("closeStaffDashboard");
+
+
 
 staffButton.addEventListener("click", async () => {
   const {
