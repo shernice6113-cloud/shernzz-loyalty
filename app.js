@@ -19,6 +19,8 @@ const staffButton = document.getElementById("staffButton");
 const staffDashboard = document.getElementById("staffDashboard");
 const closeStaffDashboard = document.getElementById("closeStaffDashboard");
 const customerList = document.getElementById("customerList");
+const staffCustomerDetail = document.getElementById("staffCustomerDetail");
+const closeCustomerDetail = document.getElementById("closeCustomerDetail");
 function showMessage(text) {
   message.textContent = text;
 }
@@ -173,6 +175,12 @@ closeStaffDashboard.addEventListener("click", () => {
   loyaltyCard.classList.remove("hidden");
 });
 
+closeCustomerDetail.addEventListener("click", () => {
+  staffCustomerDetail.classList.add("hidden");
+  closeCustomerDetail.classList.add("hidden");
+  customerList.classList.remove("hidden");
+});
+
 async function loadBusinessCustomers(businessId) {
   const { data: customers, error } = await supabaseClient
     .from("customers")
@@ -206,8 +214,28 @@ async function loadBusinessCustomers(businessId) {
 
     row.appendChild(name);
     row.appendChild(details);
+    row.addEventListener("click", () => openCustomerDetail(customer));
     customerList.appendChild(row);
   });
+}
+
+function openCustomerDetail(customer) {
+  customerList.classList.add("hidden");
+  staffCustomerDetail.classList.remove("hidden");
+  closeCustomerDetail.classList.remove("hidden");
+
+  const stamps = Math.max(
+    0,
+    Math.min(10, Number(customer.stamps) || 0)
+  );
+
+  staffCustomerDetail.innerHTML = `
+    <div class="customer-detail-card">
+      <h3>${customer.first_name || "Customer"} 💕</h3>
+      <p>${customer.email || "No email"}</p>
+      <p><strong>${stamps} / 10 hearts collected</strong></p>
+    </div>
+  `;
 }
 
 async function startApp() {
