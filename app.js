@@ -249,6 +249,12 @@ async function openCustomerDetail(customer) {
     </div>
   `;
   const staffRewardStatus = document.getElementById("staffRewardStatus");
+ if (customer.reward_status === "redeemed") {
+  const redeemedReward =
+    stamps >= 10 ? business?.reward_10 : business?.reward_5;
+
+  staffRewardStatus.textContent = `✓ Redeemed: ${redeemedReward || "Reward"}`;
+} else
   if (stamps >= 10 && business?.reward_10) {
   staffRewardStatus.textContent = `🎁 Reward unlocked: ${business.reward_10}`;
     staffRewardStatus.insertAdjacentHTML(
