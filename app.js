@@ -60,7 +60,7 @@ async function showCustomerCard(user) {
         stamps: 0,
         reward_status: "none"
       })
-      .select("first_name, stamps, reward_status")
+      .select("first_name, stamps, reward_status, user_id")
       .single();
 
     if (insertError) {
