@@ -234,8 +234,29 @@ function openCustomerDetail(customer) {
       <h3>${customer.first_name || "Customer"} 💕</h3>
       <p>${customer.email || "No email"}</p>
       <p><strong>${stamps} / 10 hearts collected</strong></p>
+      <button id="addHeartButton" class="staff-button">+ Add Heart 💕</button>
     </div>
   `;
+
+  const addHeartButton = document.getElementById("addHeartButton");
+
+addHeartButton.addEventListener("click", async () => {
+  const newStamps = Math.min(10, stamps + 1);
+
+  const { error } = await supabaseClient
+    .from("customers")
+    .update({ stamps: newStamps })
+    .eq("id", customer.id);
+
+  if (error) {
+    console.error(error);
+    showMessage("Couldn't add the heart. Please try again.");
+    return;
+  }
+
+  customer.stamps = newStamps;
+  openCustomerDetail(customer);
+});
 }
 
 async function startApp() {
