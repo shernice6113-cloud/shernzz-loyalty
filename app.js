@@ -16,6 +16,9 @@ const stampCount = document.getElementById("stampCount");
 const hearts = document.getElementById("hearts");
 const staffButton = document.getElementById("staffButton");
 
+const staffDashboard = document.getElementById("staffDashboard");
+const closeStaffDashboard = document.getElementById("closeStaffDashboard");
+const customerList = document.getElementById("customerList");
 function showMessage(text) {
   message.textContent = text;
 }
@@ -131,11 +134,81 @@ joinForm.addEventListener("submit", async (event) => {
   );
 });
 
-staffButton.addEventListener("click", () => {
-  showMessage(
-    "Secure staff login is coming next 💕"
-  );
+const staffDashboard = document.getElementById("staffDashboard");
+const customerSearch = document.getElementById("customerSearch");
+const customerList = document.getElementById("customerList");
+const closeStaffDashboard = document.getElementById("closeStaffDashboard");
+
+staffButton.addEventListener("click", async () => {
+  const {
+    data: { session }
+  } = await supabaseClient.auth.getSession();
+
+  if (!session?.user) {
+    showMessage("Please sign in first 💕");
+    return;
+  }
+
+  const { data: membership, error } = await supabaseClient
+    .from("business_members")
+    .select("business_id, role, is_active")
+    .eq("user_id", session.user.id)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (error || !membership) {
+    console.error(error);
+    showMessage("You don't have staff access to this dashboard.");
+    return;
+  }
+
+  loyaltyCard.classList.add("hidden");
+  staffDashboard.classList.remove("hidden");
+  await loadBusinessCustomers(membership.business_id);
+  showMessage("");
 });
+
+closeStaffDashboard.addEventListener("click", () => {
+  staffDashboard.classList.add("hidden");
+  loyaltyCard.classList.remove("hidden");
+});
+
+async function loadBusinessCustomers(businessId) {
+  const { data: customers, error } = await supabaseClient
+    .from("customers")
+    .select("id, first_name, email, stamps, reward_status")
+    .eq("business_id", businessId)
+    .order("first_name", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    customerList.innerHTML = "<p>Couldn't load customers yet.</p>";
+    return;
+  }
+
+  customerList.innerHTML = "";
+
+  if (!customers || customers.length === 0) {
+    customerList.innerHTML = "<p>No customers yet 💕</p>";
+    return;
+  }
+
+  customers.forEach((customer) => {
+    const row = document.createElement("div");
+    row.className = "customer-row";
+
+    const name = document.createElement("strong");
+    name.textContent = customer.first_name || "Customer";
+
+    const details = document.createElement("small");
+    details.textContent =
+      `${customer.email || "No email"} • ${customer.stamps || 0}/10 hearts`;
+
+    row.appendChild(name);
+    row.appendChild(details);
+    customerList.appendChild(row);
+  });
+}
 
 async function startApp() {
   const {
