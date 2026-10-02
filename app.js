@@ -280,6 +280,7 @@ async function loadFullCustomerHistory(customer) {
   if (error) {
     console.error("Could not load full customer history:", error);
     return "<p>Could not load history.</p>";
+    }
   if (!history || history.length === 0) {
     return "<p>No activity yet.</p>";
   }
@@ -327,7 +328,6 @@ async function openCustomerDetail(customer) {
       <div id="staffRewardStatus" class="reward-status"></div>
       <button id="addHeartButton" class="staff-button">+ Add Heart 💕</button>
       <button id="removeHeartButton" class="staff-button">− Remove Heart</button>
-      <div class="customer-history">
   <div class="customer-history">
   <h3>Recent History</h3>
   ${historyHtml}
@@ -339,7 +339,8 @@ async function openCustomerDetail(customer) {
   `;
   const staffRewardStatus = document.getElementById("staffRewardStatus");
 
-  const viewFullHistoryButton = document.getElementById("viewFullHistoryButton");
+  const viewFullHistoryButton =
+  document.getElementById("viewFullHistoryButton");
 
 if (viewFullHistoryButton) {
   viewFullHistoryButton.addEventListener("click", async () => {
@@ -362,13 +363,17 @@ if (viewFullHistoryButton) {
     const backToCustomerButton =
       document.getElementById("backToCustomerButton");
 
-    backToCustomerButton.addEventListener("click", () => {
-      openCustomerDetail(customer);
-    });
- 
+    if (backToCustomerButton) {
+      backToCustomerButton.addEventListener("click", () => {
+        openCustomerDetail(customer);
+      });
+    }
+  });
 }
- if (
-  (stamps >= 10 && customer.reward_status === "reward_10_redeemed") ||
+
+if (
+  (stamps >= 10 &&
+    customer.reward_status === "reward_10_redeemed") ||
   (stamps >= 5 &&
     stamps < 10 &&
     customer.reward_status === "reward_5_redeemed")
@@ -376,103 +381,126 @@ if (viewFullHistoryButton) {
   const redeemedReward =
     stamps >= 10 ? business?.reward_10 : business?.reward_5;
 
-  staffRewardStatus.textContent = `✓ Redeemed: ${redeemedReward || "Reward"}`;
-} else
-  if (stamps >= 10 && business?.reward_10) {
-  staffRewardStatus.textContent = `🎁 Reward unlocked: ${business.reward_10}`;
-    staffRewardStatus.insertAdjacentHTML(
-  "beforeend",
-  '<br><button type="button" id="redeemRewardButton" class="staff-button">Redeem Reward ✓</button>'
-);
+  staffRewardStatus.textContent =
+    `✓ Redeemed: ${redeemedReward || "Reward"}`;
+} else if (stamps >= 10 && business?.reward_10) {
+  staffRewardStatus.textContent =
+    `🎁 Reward unlocked: ${business.reward_10}`;
+
+  staffRewardStatus.insertAdjacentHTML(
+    "beforeend",
+    '<br><button type="button" id="redeemRewardButton" class="staff-button">Redeem Reward ✓</button>'
+  );
 } else if (stamps >= 5 && business?.reward_5) {
-  staffRewardStatus.textContent = `🎁 Reward unlocked: ${business.reward_5}`;
-    staffRewardStatus.insertAdjacentHTML(
-  "beforeend",
-  '<br><button type="button" id="redeemRewardButton" class="staff-button">Redeem Reward ✓</button>'
-);
+  staffRewardStatus.textContent =
+    `🎁 Reward unlocked: ${business.reward_5}`;
+
+  staffRewardStatus.insertAdjacentHTML(
+    "beforeend",
+    '<br><button type="button" id="redeemRewardButton" class="staff-button">Redeem Reward ✓</button>'
+  );
 } else {
   staffRewardStatus.textContent = "";
 }
 
-  const redeemRewardButton = document.getElementById("redeemRewardButton");
-  if (redeemRewardButton) {
-    redeemRewardButton.addEventListener("click", async () => {
-      const rewardUsed =
-  stamps >= 10 ? business?.reward_10 : business?.reward_5;
-      const { error: redeemError } = await supabaseClient
-  .from("customers")
-  .update({
-  reward_status: stamps >= 10 ? "reward_10_redeemed" : "reward_5_redeemed"
-})
-  .eq("id", customer.id);
-      if (redeemError) {
-  console.error(redeemError);
-  showMessage("Couldn't redeem the reward. Please try again.");
-  return;
+const redeemRewardButton =
+  document.getElementById("redeemRewardButton");
+
+if (redeemRewardButton) {
+  redeemRewardButton.addEventListener("click", async () => {
+    const rewardUsed =
+      stamps >= 10 ? business?.reward_10 : business?.reward_5;
+
+    const { error: redeemError } = await supabaseClient
+      .from("customers")
+      .update({
+        reward_status:
+          stamps >= 10
+            ? "reward_10_redeemed"
+            : "reward_5_redeemed"
+      })
+      .eq("id", customer.id);
+
+    if (redeemError) {
+      console.error(redeemError);
+      showMessage("Couldn't redeem the reward. Please try again.");
+      return;
+    }
+
+    customer.reward_status =
+      stamps >= 10
+        ? "reward_10_redeemed"
+        : "reward_5_redeemed";
+
+    await recordActivity(
+      customer,
+      "reward_redeemed",
+      `${rewardUsed} redeemed`
+    );
+
+    openCustomerDetail(customer);
+  });
 }
-      customer.reward_status =
-  stamps >= 10 ? "reward_10_redeemed" : "reward_5_redeemed";
 
-      await recordActivity(
-  customer,
-  "reward_redeemed",
-  `${rewardUsed} redeemed`
-);
-      staffRewardStatus.textContent = `✓ Redeemed: ${rewardUsed}`;
-      });
+const addHeartButton =
+  document.getElementById("addHeartButton");
+
+if (addHeartButton) {
+  addHeartButton.addEventListener("click", async () => {
+    const newStamps = Math.min(10, stamps + 1);
+
+    const { error } = await supabaseClient
+      .from("customers")
+      .update({ stamps: newStamps })
+      .eq("id", customer.id);
+
+    if (error) {
+      console.error(error);
+      showMessage("Couldn't add the heart. Please try again.");
+      return;
+    }
+
+    customer.stamps = newStamps;
+
+    await recordActivity(
+      customer,
+      "heart_added",
+      `Heart added — ${newStamps}/10`
+    );
+
+    openCustomerDetail(customer);
+  });
 }
 
-  const addHeartButton = document.getElementById("addHeartButton");
+const removeHeartButton =
+  document.getElementById("removeHeartButton");
 
-addHeartButton.addEventListener("click", async () => {
-  const newStamps = Math.min(10, stamps + 1);
+if (removeHeartButton) {
+  removeHeartButton.addEventListener("click", async () => {
+    const newStamps = Math.max(0, stamps - 1);
 
-  const { error } = await supabaseClient
-    .from("customers")
-    .update({ stamps: newStamps })
-    .eq("id", customer.id);
+    const { error } = await supabaseClient
+      .from("customers")
+      .update({ stamps: newStamps })
+      .eq("id", customer.id);
 
-  if (error) {
-    console.error(error);
-    showMessage("Couldn't add the heart. Please try again.");
-    return;
-  }
+    if (error) {
+      console.error(error);
+      showMessage("Couldn't remove the heart. Please try again.");
+      return;
+    }
 
-  customer.stamps = newStamps;
-  
-  await recordActivity(
-  customer,
-  "heart_added",
-  `Heart added — ${newStamps}/10`
-);
-  openCustomerDetail(customer);
-});
+    customer.stamps = newStamps;
 
-  const removeHeartButton = document.getElementById("removeHeartButton");
+    await recordActivity(
+      customer,
+      "heart_removed",
+      `Heart removed — ${newStamps}/10`
+    );
 
-removeHeartButton.addEventListener("click", async () => {
-  const newStamps = Math.max(0, stamps - 1);
-
-  const { error } = await supabaseClient
-    .from("customers")
-    .update({ stamps: newStamps })
-    .eq("id", customer.id);
-
-  if (error) {
-    console.error(error);
-    showMessage("Couldn't remove the heart. Please try again.");
-    return;
-  }
-
-  customer.stamps = newStamps;
-
-  await recordActivity(
-  customer,
-  "heart_removed",
-  `Heart removed — ${newStamps}/10`
-);
-  openCustomerDetail(customer);
-});
+    openCustomerDetail(customer);
+  });
+}
 }
 
 async function startApp() {
