@@ -147,14 +147,6 @@ async function startApp() {
   }
 }
 
-supabaseClient.auth.onAuthStateChange(
-  (event, session) => {
-    if (event === "SIGNED_IN" && session?.user) {
-      setTimeout(() => {
-        showCustomerCard(session.user);
-      }, 0);
-    }
-  }
-);
+
 
 startApp();
