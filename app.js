@@ -365,7 +365,8 @@ if (viewFullHistoryButton) {
     backToCustomerButton.addEventListener("click", () => {
       openCustomerDetail(customer);
     });
-  }
+ 
+}
  if (
   (stamps >= 10 && customer.reward_status === "reward_10_redeemed") ||
   (stamps >= 5 &&
