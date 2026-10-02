@@ -249,7 +249,12 @@ async function openCustomerDetail(customer) {
     </div>
   `;
   const staffRewardStatus = document.getElementById("staffRewardStatus");
- if (customer.reward_status === "redeemed") {
+ if (
+  (stamps >= 10 && customer.reward_status === "reward_10_redeemed") ||
+  (stamps >= 5 &&
+    stamps < 10 &&
+    customer.reward_status === "reward_5_redeemed")
+) {
   const redeemedReward =
     stamps >= 10 ? business?.reward_10 : business?.reward_5;
 
@@ -278,14 +283,17 @@ async function openCustomerDetail(customer) {
   stamps >= 10 ? business?.reward_10 : business?.reward_5;
       const { error: redeemError } = await supabaseClient
   .from("customers")
-  .update({ reward_status: "redeemed" })
+  .update({
+  reward_status: stamps >= 10 ? "reward_10_redeemed" : "reward_5_redeemed"
+})
   .eq("id", customer.id);
       if (redeemError) {
   console.error(redeemError);
   showMessage("Couldn't redeem the reward. Please try again.");
   return;
 }
-      customer.reward_status = "redeemed";
+      customer.reward_status =
+  stamps >= 10 ? "reward_10_redeemed" : "reward_5_redeemed";
       staffRewardStatus.textContent = `✓ Redeemed: ${rewardUsed}`;
       });
 }
