@@ -280,7 +280,7 @@ async function loadFullCustomerHistory(customer) {
   if (error) {
     console.error("Could not load full customer history:", error);
     return "<p>Could not load history.</p>";
-  } (!history || history.length === 0) {
+  if (!history || history.length === 0) {
     return "<p>No activity yet.</p>";
   }
 
