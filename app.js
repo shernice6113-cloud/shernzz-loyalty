@@ -234,6 +234,37 @@ async function recordActivity(customer, activityType, description) {
   }
 }
 
+async function loadCustomerHistory(customer) {
+  const { data: history, error } = await supabaseClient
+    .from("activity_history")
+    .select("id, activity_type, description, created_at")
+    .eq("customer_id", customer.id)
+    .eq("business_id", customer.business_id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Could not load customer history:", error);
+    return "<p>Couldn't load history.</p>";
+  }
+
+  if (!history || history.length === 0) {
+    return "<p>No activity yet.</p>";
+  }
+
+  return history.map((item) => {
+    const date = new Date(item.created_at);
+
+    return `
+      <div class="history-item">
+        <div>
+          <strong>${item.description}</strong>
+          <small>${date.toLocaleString()}</small>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
 async function openCustomerDetail(customer) {
   customerList.classList.add("hidden");
   staffCustomerDetail.classList.remove("hidden");
@@ -253,6 +284,7 @@ async function openCustomerDetail(customer) {
   console.error("Could not load business rewards:", businessError);
 }
 
+  const historyHtml = await loadCustomerHistory(customer);
   staffCustomerDetail.innerHTML = `
     <div class="customer-detail-card">
       <h3>${customer.first_name || "Customer"} 💕</h3>
@@ -261,6 +293,10 @@ async function openCustomerDetail(customer) {
       <div id="staffRewardStatus" class="reward-status"></div>
       <button id="addHeartButton" class="staff-button">+ Add Heart 💕</button>
       <button id="removeHeartButton" class="staff-button">− Remove Heart</button>
+      <div class="customer-history">
+  <h3>History</h3>
+  ${historyHtml}
+</div>
     </div>
   `;
   const staffRewardStatus = document.getElementById("staffRewardStatus");
