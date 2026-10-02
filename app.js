@@ -184,7 +184,7 @@ closeCustomerDetail.addEventListener("click", () => {
 async function loadBusinessCustomers(businessId) {
   const { data: customers, error } = await supabaseClient
     .from("customers")
-    .select("id, first_name, email, stamps, reward_status")
+    .select("id, first_name, email, stamps, reward_status, business_id")
     .eq("business_id", businessId)
     .order("first_name", { ascending: true });
 
@@ -219,7 +219,7 @@ async function loadBusinessCustomers(businessId) {
   });
 }
 
-function openCustomerDetail(customer) {
+async function openCustomerDetail(customer) {
   customerList.classList.add("hidden");
   staffCustomerDetail.classList.remove("hidden");
   closeCustomerDetail.classList.remove("hidden");
@@ -228,6 +228,15 @@ function openCustomerDetail(customer) {
     0,
     Math.min(10, Number(customer.stamps) || 0)
   );
+
+  const { data: business, error: businessError } = await supabaseClient
+  .from("businesses")
+  .select("reward_5, reward_10")
+  .eq("id", customer.business_id)
+  .single();
+  if (businessError) {
+  console.error("Could not load business rewards:", businessError);
+}
 
   staffCustomerDetail.innerHTML = `
     <div class="customer-detail-card">
@@ -240,10 +249,10 @@ function openCustomerDetail(customer) {
     </div>
   `;
   const staffRewardStatus = document.getElementById("staffRewardStatus");
-  if (stamps >= 10) {
-  staffRewardStatus.textContent = "🎁 Reward unlocked!";
-} else if (stamps >= 5) {
-  staffRewardStatus.textContent = "🎁 Reward unlocked!";
+  if (stamps >= 10 && business?.reward_10) {
+  staffRewardStatus.textContent = `🎁 Reward unlocked: ${business.reward_10}`;
+} else if (stamps >= 5 && business?.reward_5) {
+  staffRewardStatus.textContent = `🎁 Reward unlocked: ${business.reward_5}`;
 } else {
   staffRewardStatus.textContent = "";
 }
