@@ -261,3 +261,100 @@ button {
     letter-spacing: 3px;
   }
 }
+
+
+/* STAFF DASHBOARD */
+
+.staff-dashboard {
+  max-width: 760px;
+  margin: 32px auto;
+  padding: 28px;
+  border-radius: 28px;
+  background: rgba(18, 18, 18, 0.96);
+  border: 1px solid rgba(255, 45, 145, 0.25);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+.staff-dashboard.hidden {
+  display: none;
+}
+
+.staff-dashboard h2 {
+  margin: 8px 0;
+  font-size: 28px;
+}
+
+.staff-dashboard p {
+  margin-bottom: 22px;
+  opacity: 0.75;
+}
+
+#customerSearch {
+  width: 100%;
+  padding: 15px 18px;
+  margin-bottom: 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  font: inherit;
+  outline: none;
+}
+
+#customerSearch:focus {
+  border-color: #ff2d91;
+}
+
+#customerSearch::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+#customerList {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.customer-row {
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.customer-row strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 17px;
+}
+
+.customer-row small {
+  opacity: 0.65;
+}
+
+.customer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.customer-actions button {
+  flex: 1;
+  min-width: 120px;
+  padding: 11px 14px;
+  border: 0;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.add-stamp-button {
+  background: #ff2d91;
+  color: white;
+}
+
+.redeem-button {
+  background: #d6ad60;
+  color: #111;
+}
