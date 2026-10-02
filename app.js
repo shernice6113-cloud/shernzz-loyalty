@@ -219,6 +219,21 @@ async function loadBusinessCustomers(businessId) {
   });
 }
 
+async function recordActivity(customer, activityType, description) {
+  const { error } = await supabaseClient
+    .from("activity_history")
+    .insert({
+      customer_id: customer.id,
+      business_id: customer.business_id,
+      activity_type: activityType,
+      description: description
+    });
+
+  if (error) {
+    console.error("Could not record activity:", error);
+  }
+}
+
 async function openCustomerDetail(customer) {
   customerList.classList.add("hidden");
   staffCustomerDetail.classList.remove("hidden");
@@ -294,6 +309,12 @@ async function openCustomerDetail(customer) {
 }
       customer.reward_status =
   stamps >= 10 ? "reward_10_redeemed" : "reward_5_redeemed";
+
+      await recordActivity(
+  customer,
+  "reward_redeemed",
+  `${rewardUsed} redeemed`
+);
       staffRewardStatus.textContent = `✓ Redeemed: ${rewardUsed}`;
       });
 }
@@ -315,6 +336,12 @@ addHeartButton.addEventListener("click", async () => {
   }
 
   customer.stamps = newStamps;
+  
+  await recordActivity(
+  customer,
+  "heart_added",
+  `Heart added — ${newStamps}/10`
+);
   openCustomerDetail(customer);
 });
 
@@ -335,6 +362,12 @@ removeHeartButton.addEventListener("click", async () => {
   }
 
   customer.stamps = newStamps;
+
+  await recordActivity(
+  customer,
+  "heart_removed",
+  `Heart removed — ${newStamps}/10`
+);
   openCustomerDetail(customer);
 });
 }
