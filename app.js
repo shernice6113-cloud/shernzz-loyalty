@@ -234,10 +234,19 @@ function openCustomerDetail(customer) {
       <h3>${customer.first_name || "Customer"} 💕</h3>
       <p>${customer.email || "No email"}</p>
       <p><strong>${stamps} / 10 hearts collected</strong></p>
+      <div id="staffRewardStatus" class="reward-status"></div>
       <button id="addHeartButton" class="staff-button">+ Add Heart 💕</button>
       <button id="removeHeartButton" class="staff-button">− Remove Heart</button>
     </div>
   `;
+  const staffRewardStatus = document.getElementById("staffRewardStatus");
+  if (stamps >= 10) {
+  staffRewardStatus.textContent = "🎁 Reward unlocked!";
+} else if (stamps >= 5) {
+  staffRewardStatus.textContent = "🎁 Reward unlocked!";
+} else {
+  staffRewardStatus.textContent = "";
+}
 
   const addHeartButton = document.getElementById("addHeartButton");
 
