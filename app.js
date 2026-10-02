@@ -1,13 +1,5 @@
 const SUPABASE_URL = "https://uhhnclvtdzwazpuqokrc.supabase.co";
-
-const SUPABASE_KEY = "const SUPABASE_URL = "https://uhhnclvtdzwazpuqokrc.supabase.co";
-
-const SUPABASE_KEY = "PASTE_KEY_HERE";
-
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);";
+const SUPABASE_KEY = "sb_publishable_WrWN8-GIUYgaQweIVzLpKQ_SZCkt_4u";
 
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
@@ -30,11 +22,13 @@ function showMessage(text) {
 
 function renderHearts(stamps = 0) {
   const safeStamps = Math.max(0, Math.min(10, Number(stamps) || 0));
-  const filled = "♥ ".repeat(safeStamps);
-  const empty = "♡ ".repeat(10 - safeStamps);
 
-  hearts.textContent = filled + empty;
-  stampCount.textContent = `${safeStamps} / 10 hearts collected`;
+  hearts.textContent =
+    "♥ ".repeat(safeStamps) +
+    "♡ ".repeat(10 - safeStamps);
+
+  stampCount.textContent =
+    `${safeStamps} / 10 hearts collected`;
 }
 
 async function showCustomerCard(user) {
@@ -50,13 +44,15 @@ async function showCustomerCard(user) {
     return;
   }
 
-  if (!customer) {
+  let loyaltyCustomer = customer;
+
+  if (!loyaltyCustomer) {
     const firstName =
       user.user_metadata?.first_name ||
       localStorage.getItem("shernzz_first_name") ||
       "Babe";
 
-    const { data: newCustomer, error: insertError } = await supabaseClient
+    const { data, error: insertError } = await supabaseClient
       .from("customers")
       .insert({
         user_id: user.id,
@@ -69,19 +65,23 @@ async function showCustomerCard(user) {
 
     if (insertError) {
       console.error(insertError);
-      showMessage("Your account is verified, but we couldn't create your loyalty card yet.");
+      showMessage(
+        "Your account is verified, but we couldn't create your loyalty card yet."
+      );
       return;
     }
 
-    welcomeName.textContent = `Hey ${newCustomer.first_name} 💕`;
-    renderHearts(newCustomer.stamps);
-  } else {
-    welcomeName.textContent = `Hey ${customer.first_name} 💕`;
-    renderHearts(customer.stamps);
+    loyaltyCustomer = data;
   }
+
+  welcomeName.textContent =
+    `Hey ${loyaltyCustomer.first_name} 💕`;
+
+  renderHearts(loyaltyCustomer.stamps);
 
   joinForm.style.display = "none";
   loyaltyCard.classList.remove("hidden");
+
   showMessage("");
   localStorage.removeItem("shernzz_first_name");
 }
@@ -92,35 +92,48 @@ joinForm.addEventListener("submit", async (event) => {
   const firstName = firstNameInput.value.trim();
   const email = emailInput.value.trim();
 
-  if (!firstName || !email) return;
+  if (!firstName || !email) {
+    return;
+  }
 
   showMessage("Sending your secure sign-in email... 💕");
-  localStorage.setItem("shernzz_first_name", firstName);
+
+  localStorage.setItem(
+    "shernzz_first_name",
+    firstName
+  );
 
   const redirectUrl =
     window.location.origin + window.location.pathname;
 
-  const { error } = await supabaseClient.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: redirectUrl,
-      data: {
-        first_name: firstName
+  const { error } =
+    await supabaseClient.auth.signInWithOtp({
+      email: email,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: {
+          first_name: firstName
+        }
       }
-    }
-  });
+    });
 
   if (error) {
     console.error(error);
-    showMessage("Something went wrong. Please try again.");
+    showMessage(
+      "Something went wrong. Please try again."
+    );
     return;
   }
 
-  showMessage("Check your email 💌 Tap the secure link to open your loyalty card.");
+  showMessage(
+    "Check your email 💌 Tap the secure link to open your loyalty card."
+  );
 });
 
 staffButton.addEventListener("click", () => {
-  showMessage("Secure staff login is coming next 💕");
+  showMessage(
+    "Secure staff login is coming next 💕"
+  );
 });
 
 async function startApp() {
@@ -133,10 +146,14 @@ async function startApp() {
   }
 }
 
-supabaseClient.auth.onAuthStateChange((event, session) => {
-  if (event === "SIGNED_IN" && session?.user) {
-    setTimeout(() => showCustomerCard(session.user), 0);
+supabaseClient.auth.onAuthStateChange(
+  (event, session) => {
+    if (event === "SIGNED_IN" && session?.user) {
+      setTimeout(() => {
+        showCustomerCard(session.user);
+      }, 0);
+    }
   }
-});
+);
 
 startApp();
