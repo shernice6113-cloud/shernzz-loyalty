@@ -251,10 +251,37 @@ async function openCustomerDetail(customer) {
   const staffRewardStatus = document.getElementById("staffRewardStatus");
   if (stamps >= 10 && business?.reward_10) {
   staffRewardStatus.textContent = `🎁 Reward unlocked: ${business.reward_10}`;
+    staffRewardStatus.insertAdjacentHTML(
+  "beforeend",
+  '<br><button type="button" id="redeemRewardButton" class="staff-button">Redeem Reward ✓</button>'
+);
 } else if (stamps >= 5 && business?.reward_5) {
   staffRewardStatus.textContent = `🎁 Reward unlocked: ${business.reward_5}`;
+    staffRewardStatus.insertAdjacentHTML(
+  "beforeend",
+  '<br><button type="button" id="redeemRewardButton" class="staff-button">Redeem Reward ✓</button>'
+);
 } else {
   staffRewardStatus.textContent = "";
+}
+
+  const redeemRewardButton = document.getElementById("redeemRewardButton");
+  if (redeemRewardButton) {
+    redeemRewardButton.addEventListener("click", async () => {
+      const rewardUsed =
+  stamps >= 10 ? business?.reward_10 : business?.reward_5;
+      const { error: redeemError } = await supabaseClient
+  .from("customers")
+  .update({ reward_status: "redeemed" })
+  .eq("id", customer.id);
+      if (redeemError) {
+  console.error(redeemError);
+  showMessage("Couldn't redeem the reward. Please try again.");
+  return;
+}
+      customer.reward_status = "redeemed";
+      staffRewardStatus.textContent = `✓ Redeemed: ${rewardUsed}`;
+      });
 }
 
   const addHeartButton = document.getElementById("addHeartButton");
