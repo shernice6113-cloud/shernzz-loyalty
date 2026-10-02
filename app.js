@@ -58,6 +58,7 @@ async function showCustomerCard(user) {
         user_id: user.id,
         first_name: firstName,
         stamps: 0,
+        email: user.email,
         reward_status: "none"
       })
       .select("first_name, stamps, reward_status, user_id")
