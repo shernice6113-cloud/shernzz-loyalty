@@ -362,7 +362,7 @@ const rewardsUnlocked = customers.filter(
 
 document.getElementById("totalCustomers").textContent = totalCustomers;
 document.getElementById("totalHearts").textContent = totalHearts;
-document.getElementById("rewardsUnlocked").textContent = rewardsUnlocked;
+document.getElementById("rewardsReady").textContent = rewardsUnlocked;
   customers.forEach((customer) => {
     const row = document.createElement("div");
     row.className = "customer-row";
