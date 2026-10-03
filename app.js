@@ -35,6 +35,8 @@ const historyBackButton =
 
 const customerHistoryList =
   document.getElementById("customerHistoryList");
+const staffCustomerControls =
+  document.getElementById("staffCustomerControls");
 const reward5Card =
   document.getElementById("reward5Card");
 
@@ -468,6 +470,7 @@ async function openCustomerDetail(customer) {
 
 if (viewFullHistoryButton) {
   viewFullHistoryButton.addEventListener("click", async () => {
+    staffCustomerControls.classList.add("hidden");
     const fullHistoryHtml = await loadFullCustomerHistory(customer);
 
     staffCustomerDetail.innerHTML = `
@@ -489,6 +492,7 @@ if (viewFullHistoryButton) {
 
     if (backToCustomerButton) {
       backToCustomerButton.addEventListener("click", () => {
+       staffCustomerControls.classList.remove("hidden");
         openCustomerDetail(customer);
       });
     }
