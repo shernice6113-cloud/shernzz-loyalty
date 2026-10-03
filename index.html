@@ -60,32 +60,88 @@
 
     </section>
 
-    <section id="loyaltyCard" class="loyalty-card hidden">
+   <section id="loyaltyCard" class="loyalty-card hidden">
 
+  <div class="customer-home">
+
+    <div class="customer-welcome">
       <div class="eyebrow">SHERNZZ LOYALTY</div>
-
+      <p class="welcome-small">Welcome back, 💕</p>
       <h2 id="welcomeName">Hey 💕</h2>
+    </div>
 
-      <p>Your rewards</p>
+    <div class="digital-loyalty-card">
+      <div class="card-shine"></div>
+
+      <div class="card-heading">
+        <span>Your Loyalty Card</span>
+        <span class="card-sparkle">✨</span>
+      </div>
 
       <div id="hearts" class="hearts">
         ♡ ♡ ♡ ♡ ♡<br>
         ♡ ♡ ♡ ♡ ♡
       </div>
 
-      <div class="reward">
-        <strong>5 hearts</strong>
+      <p id="stampCount" class="card-progress">
+        0 / 10 orders
+      </p>
+    </div>
+
+    <div class="next-reward-card">
+      <div class="next-reward-icon">🎁</div>
+
+      <div class="next-reward-text">
+        <small>Next Reward</small>
+        <strong id="nextRewardText">
+          5 orders → 25% OFF
+        </strong>
+      </div>
+
+      <span class="reward-arrow">›</span>
+    </div>
+
+    <div class="reward-milestones">
+
+      <div class="reward milestone-reward">
+        <span class="milestone-icon">🎁</span>
+        <strong>5th order</strong>
         <span>25% OFF</span>
       </div>
 
-      <div class="reward">
-        <strong>10 hearts</strong>
+      <div class="reward milestone-reward">
+        <span class="milestone-icon">🎁</span>
+        <strong>10th order</strong>
         <span>50% OFF</span>
       </div>
 
-      <p id="stampCount">0 / 10 hearts collected</p>
+    </div>
 
-    </section>
+    <nav class="customer-nav">
+      <button type="button" class="nav-item active" id="homeNavButton">
+        <span>⌂</span>
+        <small>Home</small>
+      </button>
+
+      <button type="button" class="nav-item" id="rewardsNavButton">
+        <span>☆</span>
+        <small>Rewards</small>
+      </button>
+
+      <button type="button" class="nav-item" id="historyNavButton">
+        <span>◷</span>
+        <small>History</small>
+      </button>
+
+      <button type="button" class="nav-item" id="profileNavButton">
+        <span>♙</span>
+        <small>Profile</small>
+      </button>
+    </nav>
+
+  </div>
+
+</section>
 
   </main>
 
