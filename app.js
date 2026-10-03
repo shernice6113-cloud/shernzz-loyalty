@@ -41,6 +41,9 @@ const customerProfilePage =
 const profileBackButton =
   document.getElementById("profileBackButton");
 
+const signOutButton =
+  document.getElementById("signOutButton");
+
 const profileName =
   document.getElementById("profileName");
 
@@ -771,5 +774,9 @@ if (profileNavButton && profileBackButton) {
     customerProfilePage.classList.add("hidden");
     customerHome.classList.remove("hidden");
   });
+  signOutButton.addEventListener("click", async () => {
+  await supabaseClient.auth.signOut();
+  window.location.reload();
+});
 }
 startApp();
