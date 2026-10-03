@@ -32,7 +32,26 @@ const customerHistoryPage =
 
 const historyBackButton =
   document.getElementById("historyBackButton");
+const profileNavButton =
+  document.getElementById("profileNavButton");
 
+const customerProfilePage =
+  document.getElementById("customerProfilePage");
+
+const profileBackButton =
+  document.getElementById("profileBackButton");
+
+const profileName =
+  document.getElementById("profileName");
+
+const profileEmail =
+  document.getElementById("profileEmail");
+
+const profileMemberSince =
+  document.getElementById("profileMemberSince");
+
+const signOutButton =
+  document.getElementById("signOutButton");
 const customerHistoryList =
   document.getElementById("customerHistoryList");
 const staffCustomerControls =
@@ -723,5 +742,34 @@ async function loadCustomerHistoryPage() {
       `;
     })
     .join("");
+}
+
+if (profileNavButton && profileBackButton) {
+  profileNavButton.addEventListener("click", async () => {
+    customerHome.classList.add("hidden");
+    customerRewardsPage.classList.add("hidden");
+    customerHistoryPage.classList.add("hidden");
+    customerProfilePage.classList.remove("hidden");
+
+    const {
+      data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (session?.user) {
+      profileName.textContent =
+        session.user.user_metadata?.first_name || "Shernzz Member";
+
+      profileEmail.textContent =
+        session.user.email || "—";
+
+      profileMemberSince.textContent =
+        new Date(session.user.created_at).toLocaleDateString();
+    }
+  });
+
+  profileBackButton.addEventListener("click", () => {
+    customerProfilePage.classList.add("hidden");
+    customerHome.classList.remove("hidden");
+  });
 }
 startApp();
