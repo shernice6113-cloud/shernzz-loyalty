@@ -53,8 +53,6 @@ const profileEmail =
 const profileMemberSince =
   document.getElementById("profileMemberSince");
 
-const signOutButton =
-  document.getElementById("signOutButton");
 const customerHistoryList =
   document.getElementById("customerHistoryList");
 const staffCustomerControls =
