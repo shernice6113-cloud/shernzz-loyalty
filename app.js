@@ -24,7 +24,17 @@ const rewardsNavButton =
 
 const rewardsBackButton =
   document.getElementById("rewardsBackButton");
+const historyNavButton =
+  document.getElementById("historyNavButton");
 
+const customerHistoryPage =
+  document.getElementById("customerHistoryPage");
+
+const historyBackButton =
+  document.getElementById("historyBackButton");
+
+const customerHistoryList =
+  document.getElementById("customerHistoryList");
 const reward5Card =
   document.getElementById("reward5Card");
 
@@ -638,5 +648,16 @@ if (rewardsNavButton && rewardsBackButton) {
     customerHome.classList.remove("hidden");
   });
 }
+if (historyNavButton && historyBackButton) {
+  historyNavButton.addEventListener("click", () => {
+    customerHome.classList.add("hidden");
+    customerRewardsPage.classList.add("hidden");
+    customerHistoryPage.classList.remove("hidden");
+  });
 
+  historyBackButton.addEventListener("click", () => {
+    customerHistoryPage.classList.add("hidden");
+    customerHome.classList.remove("hidden");
+  });
+}
 startApp();
