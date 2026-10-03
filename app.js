@@ -346,7 +346,20 @@ async function loadBusinessCustomers(businessId) {
     customerList.innerHTML = "<p>No customers yet 💕</p>";
     return;
   }
+const totalCustomers = customers.length;
 
+const totalHearts = customers.reduce(
+  (total, customer) => total + (customer.stamps || 0),
+  0
+);
+
+const rewardsUnlocked = customers.filter(
+  (customer) => (customer.stamps || 0) >= 5
+).length;
+
+document.getElementById("totalCustomers").textContent = totalCustomers;
+document.getElementById("totalHearts").textContent = totalHearts;
+document.getElementById("rewardsUnlocked").textContent = rewardsUnlocked;
   customers.forEach((customer) => {
     const row = document.createElement("div");
     row.className = "customer-row";
