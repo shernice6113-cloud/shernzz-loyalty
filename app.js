@@ -486,6 +486,7 @@ if (viewFullHistoryButton) {
         </button>
       </div>
     `;
+    staffCustomerControls.classList.add("hidden");
 
     const backToCustomerButton =
       document.getElementById("backToCustomerButton");
