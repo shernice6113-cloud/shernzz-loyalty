@@ -327,7 +327,7 @@ closeStaffDashboard.addEventListener("click", () => {
 closeCustomerDetail.addEventListener("click", () => {
   staffCustomerDetail.classList.add("hidden");
   closeCustomerDetail.classList.add("hidden");
-  customerList.classList.remove("hidden");
+ staffCustomerControls.classList.remove("hidden");
 });
 
 async function loadBusinessCustomers(businessId) {
@@ -495,7 +495,7 @@ async function loadFullCustomerHistory(customer) {
 
 
 async function openCustomerDetail(customer) {
-  customerList.classList.add("hidden");
+  staffCustomerControls.classList.add("hidden");
   staffCustomerDetail.classList.remove("hidden");
   closeCustomerDetail.classList.remove("hidden");
 
@@ -559,7 +559,6 @@ if (viewFullHistoryButton) {
 
     if (backToCustomerButton) {
       backToCustomerButton.addEventListener("click", () => {
-       staffCustomerControls.classList.remove("hidden");
         openCustomerDetail(customer);
       });
     }
