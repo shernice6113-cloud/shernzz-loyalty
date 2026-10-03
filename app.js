@@ -15,6 +15,33 @@ const welcomeName = document.getElementById("welcomeName");
 const stampCount = document.getElementById("stampCount");
 const hearts = document.getElementById("hearts");
 const staffButton = document.getElementById("staffButton");
+const customerHome = document.querySelector(".customer-home");
+const customerRewardsPage =
+  document.getElementById("customerRewardsPage");
+
+const rewardsNavButton =
+  document.getElementById("rewardsNavButton");
+
+const rewardsBackButton =
+  document.getElementById("rewardsBackButton");
+
+const reward5Card =
+  document.getElementById("reward5Card");
+
+const reward10Card =
+  document.getElementById("reward10Card");
+
+const reward5Status =
+  document.getElementById("reward5Status");
+
+const reward10Status =
+  document.getElementById("reward10Status");
+
+const reward5Message =
+  document.getElementById("reward5Message");
+
+const reward10Message =
+  document.getElementById("reward10Message");
 
 const staffDashboard = document.getElementById("staffDashboard");
 const closeStaffDashboard = document.getElementById("closeStaffDashboard");
@@ -63,7 +90,64 @@ function renderHearts(stamps = 0) {
       "50% OFF reward unlocked 🎉";
   }
 }
+function renderCustomerRewards(stamps = 0, rewardStatus = "none") {
+  const safeStamps = Math.max(
+    0,
+    Math.min(10, Number(stamps) || 0)
+  );
 
+  // Reset both cards first
+  reward5Card.classList.remove("unlocked", "redeemed");
+  reward10Card.classList.remove("unlocked", "redeemed");
+
+  // 5TH ORDER — 25% OFF
+  if (rewardStatus === "reward_5_redeemed") {
+    reward5Status.textContent = "Redeemed ✓";
+    reward5Message.textContent =
+      "Your 25% OFF reward has been used.";
+    reward5Card.classList.add("redeemed");
+  } else if (safeStamps >= 5) {
+    reward5Status.textContent = "Unlocked 🎁";
+    reward5Message.textContent =
+      "Your 25% OFF reward is ready to use.";
+    reward5Card.classList.add("unlocked");
+  } else {
+    const remaining = 5 - safeStamps;
+
+    reward5Status.textContent = "Locked 🔒";
+    reward5Message.textContent =
+      `${remaining} more ${remaining === 1 ? "order" : "orders"} to unlock this reward.`;
+  }
+
+  // 10TH ORDER — 50% OFF
+  if (rewardStatus === "reward_10_redeemed") {
+    reward10Status.textContent = "Redeemed ✓";
+    reward10Message.textContent =
+      "Your 50% OFF reward has been used.";
+    reward10Card.classList.add("redeemed");
+
+    // Reaching the 10th reward means the 5th milestone
+    // was already reached earlier in this cycle.
+    if (safeStamps >= 10) {
+      reward5Status.textContent = "Redeemed ✓";
+      reward5Message.textContent =
+        "Your 25% OFF reward from this cycle has been completed.";
+      reward5Card.classList.remove("unlocked");
+      reward5Card.classList.add("redeemed");
+    }
+  } else if (safeStamps >= 10) {
+    reward10Status.textContent = "Unlocked 🎁";
+    reward10Message.textContent =
+      "Your 50% OFF reward is ready to use.";
+    reward10Card.classList.add("unlocked");
+  } else {
+    const remaining = 10 - safeStamps;
+
+    reward10Status.textContent = "Locked 🔒";
+    reward10Message.textContent =
+      `${remaining} more ${remaining === 1 ? "order" : "orders"} to unlock this reward.`;
+  }
+}
 async function showCustomerCard(user) {
   const { data: customer, error } = await supabaseClient
     .from("customers")
@@ -112,7 +196,10 @@ async function showCustomerCard(user) {
     `Hey ${loyaltyCustomer.first_name} 💕`;
 
   renderHearts(loyaltyCustomer.stamps);
-
+renderCustomerRewards(
+  loyaltyCustomer.stamps,
+  loyaltyCustomer.reward_status
+);
   joinForm.style.display = "none";
   loyaltyCard.classList.remove("hidden");
 
@@ -541,6 +628,16 @@ async function startApp() {
   }
 }
 
+if (rewardsNavButton && rewardsBackButton) {
+  rewardsNavButton.addEventListener("click", () => {
+    customerHome.classList.add("hidden");
+    customerRewardsPage.classList.remove("hidden");
+  });
 
+  rewardsBackButton.addEventListener("click", () => {
+    customerRewardsPage.classList.add("hidden");
+    customerHome.classList.remove("hidden");
+  });
+}
 
 startApp();
