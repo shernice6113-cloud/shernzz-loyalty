@@ -59,12 +59,11 @@ function renderHearts(stamps = 0) {
   );
 
   hearts.innerHTML =
-    "♥ ".repeat(Math.min(safeStamps, 5)) +
-    "♡ ".repeat(Math.max(0, 5 - safeStamps)) +
-    "<br>" +
-    "♥ ".repeat(Math.max(0, safeStamps - 5)) +
-    "♡ ".repeat(Math.max(0, 10 - safeStamps));
-
+  "♥ ".repeat(Math.min(safeStamps, 5)) +
+  "♡ ".repeat(5 - Math.min(safeStamps, 5)) +
+  "<br>" +
+  "♥ ".repeat(Math.max(0, safeStamps - 5)) +
+  "♡ ".repeat(5 - Math.max(0, safeStamps - 5));
   stampCount.textContent =
     `${safeStamps} / 10 orders`;
 
