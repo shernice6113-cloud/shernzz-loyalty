@@ -389,3 +389,264 @@ button {
   opacity: 0.65;
   font-size: 0.8rem;
 }
+
+/* CUSTOMER LOYALTY DASHBOARD */
+
+.customer-home {
+  width: 100%;
+}
+
+.customer-welcome {
+  margin-bottom: 24px;
+}
+
+.customer-welcome .eyebrow {
+  margin-bottom: 14px;
+}
+
+.welcome-small {
+  margin: 0 0 2px !important;
+  color: #aaa0a7 !important;
+  font-size: 14px !important;
+}
+
+.customer-welcome h2 {
+  margin: 0;
+  font-size: clamp(28px, 7vw, 40px);
+}
+
+
+/* DIGITAL LOYALTY CARD */
+
+.digital-loyalty-card {
+  position: relative;
+  overflow: hidden;
+  margin: 22px 0;
+  padding: 26px 24px;
+  border: 1px solid rgba(255, 120, 183, 0.35);
+  border-radius: 26px;
+  background:
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(255, 92, 166, 0.24),
+      transparent 35%
+    ),
+    linear-gradient(
+      145deg,
+      #25151f,
+      #120e12 60%,
+      #1c1018
+    );
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.digital-loyalty-card::after {
+  content: "SC";
+  position: absolute;
+  right: 20px;
+  bottom: -12px;
+  color: rgba(255, 120, 183, 0.07);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 90px;
+  pointer-events: none;
+}
+
+.card-shine {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  top: -100px;
+  left: -70px;
+  border-radius: 50%;
+  background: rgba(255, 72, 158, 0.13);
+  filter: blur(20px);
+  pointer-events: none;
+}
+
+.card-heading {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #f9dce9;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.card-sparkle {
+  font-size: 20px;
+}
+
+.digital-loyalty-card .hearts {
+  position: relative;
+  z-index: 1;
+  margin: 26px 0 16px;
+  color: #ff5ca8;
+  font-size: clamp(27px, 7vw, 36px);
+  line-height: 1.55;
+  letter-spacing: 4px;
+  text-align: center;
+}
+
+.digital-loyalty-card .card-progress {
+  position: relative;
+  z-index: 1;
+  margin: 0 !important;
+  color: #f7e8ef !important;
+  font-size: 14px !important;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+
+/* NEXT REWARD */
+
+.next-reward-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 18px 0;
+  padding: 18px;
+  border: 1px solid rgba(255, 105, 180, 0.18);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.next-reward-icon {
+  display: grid;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border-radius: 15px;
+  background: rgba(255, 79, 163, 0.12);
+  font-size: 22px;
+}
+
+.next-reward-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.next-reward-text small {
+  color: #968d93;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.next-reward-text strong {
+  color: #ffffff;
+  font-size: 16px;
+}
+
+.reward-arrow {
+  color: #ff78b7;
+  font-size: 30px;
+}
+
+
+/* REWARD MILESTONES */
+
+.reward-milestones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.milestone-reward {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 0;
+  padding: 18px;
+}
+
+.milestone-reward .milestone-icon {
+  margin-bottom: 4px;
+  font-size: 20px;
+}
+
+.milestone-reward strong {
+  font-size: 14px;
+}
+
+.milestone-reward > span:last-child {
+  color: #ff78b7;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+
+/* CUSTOMER NAVIGATION */
+
+.customer-nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 30px;
+  padding: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  background: rgba(9, 7, 9, 0.85);
+}
+
+.customer-nav .nav-item {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  padding: 10px 4px;
+  border-radius: 15px;
+  background: transparent;
+  color: #817980;
+  font-size: 18px;
+}
+
+.customer-nav .nav-item small {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.customer-nav .nav-item.active {
+  background: rgba(255, 79, 163, 0.11);
+  color: #ff78b7;
+}
+
+
+/* MOBILE CUSTOMER DASHBOARD */
+
+@media (max-width: 600px) {
+  .digital-loyalty-card {
+    padding: 23px 17px;
+  }
+
+  .digital-loyalty-card .hearts {
+    letter-spacing: 2px;
+  }
+
+  .reward-milestones {
+    gap: 9px;
+  }
+
+  .milestone-reward {
+    padding: 15px 12px;
+  }
+
+  .customer-nav {
+    margin-top: 24px;
+  }
+}
