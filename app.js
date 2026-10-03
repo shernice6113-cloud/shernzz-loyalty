@@ -538,7 +538,6 @@ async function openCustomerDetail(customer) {
 
 if (viewFullHistoryButton) {
   viewFullHistoryButton.addEventListener("click", async () => {
-    staffCustomerControls.classList.add("hidden");
     const fullHistoryHtml = await loadFullCustomerHistory(customer);
 
     staffCustomerDetail.innerHTML = `
@@ -554,8 +553,7 @@ if (viewFullHistoryButton) {
         </button>
       </div>
     `;
-    staffCustomerControls.classList.add("hidden");
-
+   
     const backToCustomerButton =
       document.getElementById("backToCustomerButton");
 
