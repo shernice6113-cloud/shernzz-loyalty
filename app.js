@@ -654,15 +654,74 @@ if (rewardsNavButton && rewardsBackButton) {
   });
 }
 if (historyNavButton && historyBackButton) {
-  historyNavButton.addEventListener("click", () => {
+ historyNavButton.addEventListener("click", async () => {
     customerHome.classList.add("hidden");
     customerRewardsPage.classList.add("hidden");
     customerHistoryPage.classList.remove("hidden");
+await loadCustomerHistoryPage();
   });
 
   historyBackButton.addEventListener("click", () => {
     customerHistoryPage.classList.add("hidden");
     customerHome.classList.remove("hidden");
   });
+}
+
+async function loadCustomerHistoryPage() {
+  const {
+    data: { session }
+  } = await supabaseClient.auth.getSession();
+
+  if (!session?.user) {
+    customerHistoryList.innerHTML =
+      '<p class="history-empty">Please sign in to view your history.</p>';
+    return;
+  }
+
+  const { data: customer, error: customerError } = await supabaseClient
+    .from("customers")
+    .select("id, business_id")
+    .eq("user_id", session.user.id)
+    .maybeSingle();
+
+  if (customerError || !customer) {
+    console.error("Could not find customer:", customerError);
+    customerHistoryList.innerHTML =
+      '<p class="history-empty">Could not load your history.</p>';
+    return;
+  }
+
+  const { data: history, error: historyError } = await supabaseClient
+    .from("activity_history")
+    .select("activity_type, description, created_at")
+    .eq("customer_id", customer.id)
+    .eq("business_id", customer.business_id)
+    .order("created_at", { ascending: false });
+
+  if (historyError) {
+    console.error("Could not load customer history:", historyError);
+    customerHistoryList.innerHTML =
+      '<p class="history-empty">Could not load your history.</p>';
+    return;
+  }
+
+  if (!history || history.length === 0) {
+    customerHistoryList.innerHTML =
+      '<p class="history-empty">No loyalty activity yet. 💕</p>';
+    return;
+  }
+
+  customerHistoryList.innerHTML = history
+    .map((item) => {
+      const date = new Date(item.created_at).toLocaleString();
+
+      return `
+        <div class="history-item">
+          <strong>${item.description || "Loyalty activity"}</strong>
+          <small>${date}</small>
+        </div>
+      `;
+    })
+    .join("");
 }
 startApp();
