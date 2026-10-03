@@ -26,14 +26,42 @@ function showMessage(text) {
 }
 
 function renderHearts(stamps = 0) {
-  const safeStamps = Math.max(0, Math.min(10, Number(stamps) || 0));
+  const safeStamps = Math.max(
+    0,
+    Math.min(10, Number(stamps) || 0)
+  );
 
-  hearts.textContent =
-    "♥ ".repeat(safeStamps) +
-    "♡ ".repeat(10 - safeStamps);
+  hearts.innerHTML =
+    "♥ ".repeat(Math.min(safeStamps, 5)) +
+    "♡ ".repeat(Math.max(0, 5 - safeStamps)) +
+    "<br>" +
+    "♥ ".repeat(Math.max(0, safeStamps - 5)) +
+    "♡ ".repeat(Math.max(0, 10 - safeStamps));
 
   stampCount.textContent =
-    `${safeStamps} / 10 hearts collected`;
+    `${safeStamps} / 10 orders`;
+
+  const nextRewardText =
+    document.getElementById("nextRewardText");
+
+  if (!nextRewardText) {
+    return;
+  }
+
+  if (safeStamps < 5) {
+    const remaining = 5 - safeStamps;
+
+    nextRewardText.textContent =
+      `${remaining} more ${remaining === 1 ? "order" : "orders"} → 25% OFF`;
+  } else if (safeStamps < 10) {
+    const remaining = 10 - safeStamps;
+
+    nextRewardText.textContent =
+      `${remaining} more ${remaining === 1 ? "order" : "orders"} → 50% OFF`;
+  } else {
+    nextRewardText.textContent =
+      "50% OFF reward unlocked 🎉";
+  }
 }
 
 async function showCustomerCard(user) {
