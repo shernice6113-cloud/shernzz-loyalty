@@ -78,6 +78,8 @@ const reward10Message =
 const staffDashboard = document.getElementById("staffDashboard");
 const closeStaffDashboard = document.getElementById("closeStaffDashboard");
 const customerList = document.getElementById("customerList");
+const staffRecentActivity =
+  document.getElementById("staffRecentActivity");
 const staffCustomerDetail = document.getElementById("staffCustomerDetail");
 const closeCustomerDetail = document.getElementById("closeCustomerDetail");
 function showMessage(text) {
@@ -313,6 +315,7 @@ staffButton.addEventListener("click", async () => {
   loyaltyCard.classList.add("hidden");
   staffDashboard.classList.remove("hidden");
   await loadBusinessCustomers(membership.business_id);
+  await loadStaffRecentActivity(membership.business_id);
   showMessage("");
 });
 
@@ -378,6 +381,38 @@ document.getElementById("rewardsUnlocked").textContent = rewardsUnlocked;
   });
 }
 
+async function loadStaffRecentActivity(businessId) {
+  const { data: history, error } = await supabaseClient
+    .from("activity_history")
+    .select("description, created_at")
+    .eq("business_id", businessId)
+    .order("created_at", { ascending: false })
+    .limit(5);
+
+  if (error) {
+    console.error("Could not load staff activity:", error);
+    staffRecentActivity.innerHTML = "<p>Couldn't load recent activity.</p>";
+    return;
+  }
+
+  if (!history || history.length === 0) {
+    staffRecentActivity.innerHTML = "<p>No recent activity yet.</p>";
+    return;
+  }
+
+  staffRecentActivity.innerHTML = history
+    .map((item) => {
+      const date = new Date(item.created_at).toLocaleString();
+
+      return `
+        <div class="history-item">
+          <strong>${item.description || "Loyalty activity"}</strong>
+          <small>${date}</small>
+        </div>
+      `;
+    })
+    .join("");
+}
 async function recordActivity(customer, activityType, description) {
   const { error } = await supabaseClient
     .from("activity_history")
