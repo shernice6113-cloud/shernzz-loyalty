@@ -790,6 +790,25 @@ async function showAccountHome(user) {
       businessAccountList.appendChild(businessButton);
     });
   }
+  if (loyaltyAccountList) {
+  loyaltyAccountList.innerHTML = "";
+
+  memberships.forEach((membership) => {
+    const loyaltyButton = document.createElement("button");
+
+    loyaltyButton.type = "button";
+    loyaltyButton.className = "staff-button";
+    loyaltyButton.textContent =
+      `${membership.businesses?.name || "Your Business"} Loyalty Card 💕`;
+
+    loyaltyButton.addEventListener("click", async () => {
+      accountHome.classList.add("hidden");
+      await showCustomerCard(user);
+    });
+
+    loyaltyAccountList.appendChild(loyaltyButton);
+  });
+}
 }
 async function startApp() {
   const {
