@@ -527,11 +527,23 @@ closeCustomerDetail.style.display = "block";
   <h3>Recent History</h3>
   ${historyHtml}
   <button type="button" id="viewFullHistoryButton" class="staff-button">
-    View Full History
-  </button>
+  View Full History
+</button>
+
+<button type="button" id="backToCustomersButton" class="staff-button">
+  ← Back to customers
+</button>
+
 </div>
     </div>
   `;
+  const backToCustomersButton =
+  document.getElementById("backToCustomersButton");
+
+backToCustomersButton.addEventListener("click", () => {
+  staffCustomerDetail.classList.add("hidden");
+  staffCustomerControls.classList.remove("hidden");
+});
   const staffRewardStatus = document.getElementById("staffRewardStatus");
 
   const viewFullHistoryButton =
