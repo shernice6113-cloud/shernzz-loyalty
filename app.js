@@ -292,7 +292,21 @@ joinForm.addEventListener("submit", async (event) => {
 const customerSearch = document.getElementById("customerSearch");
 
 
+async function getStaffMembership(userId) {
+  const { data: membership, error } = await supabaseClient
+    .from("business_members")
+    .select("business_id, role, is_active")
+    .eq("user_id", userId)
+    .eq("is_active", true)
+    .maybeSingle();
 
+  if (error) {
+    console.error("Could not check staff membership:", error);
+    return null;
+  }
+
+  return membership;
+}
 staffButton.addEventListener("click", async () => {
   const {
     data: { session }
@@ -733,8 +747,20 @@ async function startApp() {
   } = await supabaseClient.auth.getSession();
 
   if (session?.user) {
+  const membership = await getStaffMembership(session.user.id);
+
+  if (membership) {
+    joinCard.classList.add("hidden");
+    staffButton.classList.add("hidden");
+    loyaltyCard.classList.add("hidden");
+    staffDashboard.classList.remove("hidden");
+
+    await loadBusinessCustomers(membership.business_id);
+    await loadStaffRecentActivity(membership.business_id);
+  } else {
     await showCustomerCard(session.user);
   }
+}
 }
 if (nextRewardCard) {
   nextRewardCard.addEventListener("click", () => {
