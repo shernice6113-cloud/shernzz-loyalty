@@ -808,24 +808,39 @@ async function showAccountHome(user) {
       businessAccountList.appendChild(businessButton);
     });
   }
-  if (loyaltyAccountList) {
+ if (loyaltyAccountList) {
   loyaltyAccountList.innerHTML = "";
 
-  memberships.forEach((membership) => {
-    const loyaltyButton = document.createElement("button");
+  const { data: loyaltyCustomers, error: loyaltyError } =
+    await supabaseClient
+      .from("customers")
+      .select("id, business_id, businesses(business_name)")
+      .eq("user_id", user.id);
 
-    loyaltyButton.type = "button";
-    loyaltyButton.className = "staff-button";
-    loyaltyButton.textContent =
-      `${membership.businesses?.business_name || "Your Business"} Loyalty Card 💕`;
+  if (loyaltyError) {
+    console.error("Could not load loyalty cards:", loyaltyError);
+    loyaltyAccountList.innerHTML =
+      "<p>Couldn't load your loyalty cards.</p>";
+  } else if (!loyaltyCustomers || loyaltyCustomers.length === 0) {
+    loyaltyAccountList.innerHTML =
+      "<p>No loyalty cards yet.</p>";
+  } else {
+    loyaltyCustomers.forEach((customer) => {
+      const loyaltyButton = document.createElement("button");
 
-    loyaltyButton.addEventListener("click", async () => {
-      accountHome.classList.add("hidden");
-      await showCustomerCard(user);
+      loyaltyButton.type = "button";
+      loyaltyButton.className = "staff-button";
+      loyaltyButton.textContent =
+        `${customer.businesses?.business_name || "Loyalty"} Loyalty Card 💕`;
+
+      loyaltyButton.addEventListener("click", async () => {
+        accountHome.classList.add("hidden");
+        await showCustomerCard(user);
+      });
+
+      loyaltyAccountList.appendChild(loyaltyButton);
     });
-
-    loyaltyAccountList.appendChild(loyaltyButton);
-  });
+  }
 }
 }
 async function startApp() {
