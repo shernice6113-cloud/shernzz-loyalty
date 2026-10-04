@@ -911,6 +911,27 @@ if (businessError) {
   showMessage("Couldn't create your business. Please try again.");
   return;
 }
+    const { error: membershipError } = await supabaseClient
+  .from("business_members")
+  .insert({
+    business_id: newBusiness.id,
+    user_id: user.id,
+    role: "owner",
+    is_active: true
+  });
+
+if (membershipError) {
+  console.error("Could not create membership:", membershipError);
+  showMessage("Business created, but couldn't connect it to your account.");
+  return;
+}
+
+showMessage("Your loyalty program was created! 💕");
+
+createBusinessPage.classList.add("hidden");
+accountHome.classList.remove("hidden");
+
+await loadAccountHome();
   });
 }
 if (historyNavButton && historyBackButton) {
