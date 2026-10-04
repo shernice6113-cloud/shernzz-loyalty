@@ -185,6 +185,7 @@ function renderCustomerRewards(stamps = 0, rewardStatus = "none") {
 }
 async function showCustomerCard(user) {
   joinCard.classList.add("hidden");
+  staffButton.classList.add("hidden");
   const { data: customer, error } = await supabaseClient
     .from("customers")
     .select("first_name, stamps, reward_status")
@@ -317,6 +318,7 @@ staffButton.addEventListener("click", async () => {
 
   loyaltyCard.classList.add("hidden");
   joinCard.classList.add("hidden");
+  staffButton.classList.add("hidden");
   staffDashboard.classList.remove("hidden");
   await loadBusinessCustomers(membership.business_id);
   await loadStaffRecentActivity(membership.business_id);
