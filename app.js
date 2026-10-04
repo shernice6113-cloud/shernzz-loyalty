@@ -16,6 +16,14 @@ const welcomeName = document.getElementById("welcomeName");
 const stampCount = document.getElementById("stampCount");
 const hearts = document.getElementById("hearts");
 const staffButton = document.getElementById("staffButton");
+const accountHome =
+  document.getElementById("accountHome");
+
+const businessAccountList =
+  document.getElementById("businessAccountList");
+
+const loyaltyAccountList =
+  document.getElementById("loyaltyAccountList");
 const customerHome = document.querySelector(".customer-home");
 const customerRewardsPage =
   document.getElementById("customerRewardsPage");
@@ -740,27 +748,57 @@ if (removeHeartButton) {
   });
 }
 }
+async function showAccountHome(user) {
+  joinCard.classList.add("hidden");
+  loyaltyCard.classList.add("hidden");
+  staffDashboard.classList.add("hidden");
+  accountHome.classList.remove("hidden");
 
+  businessAccountList.innerHTML = "<p>Loading your businesses...</p>";
+  loyaltyAccountList.innerHTML = "<p>Loading your loyalty cards...</p>";
+
+  const { data: memberships, error } = await supabaseClient
+    .from("business_members")
+    .select("business_id, role, is_active, businesses(name)")
+    .eq("user_id", user.id)
+    .eq("is_active", true);
+
+  if (error) {
+    console.error("Could not load businesses:", error);
+    businessAccountList.innerHTML = "<p>Couldn't load your businesses.</p>";
+    return;
+  }
+
+  if (!memberships || memberships.length === 0) {
+    businessAccountList.innerHTML = "<p>No businesses yet.</p>";
+  } else {
+    businessAccountList.innerHTML = "";
+
+    memberships.forEach((membership) => {
+      const businessButton = document.createElement("button");
+      businessButton.type = "button";
+      businessButton.className = "staff-button";
+      businessButton.textContent = `${membership.businesses?.name || "Your Business"} 💼`;
+      businessButton.addEventListener("click", async () => {
+        accountHome.classList.add("hidden");
+        staffDashboard.classList.remove("hidden");
+
+        await loadBusinessCustomers(membership.business_id);
+        await loadStaffRecentActivity(membership.business_id);
+      });
+
+      businessAccountList.appendChild(businessButton);
+    });
+  }
+}
 async function startApp() {
   const {
     data: { session }
   } = await supabaseClient.auth.getSession();
 
   if (session?.user) {
-  const membership = await getStaffMembership(session.user.id);
-
-  if (membership) {
-    joinCard.classList.add("hidden");
-    staffButton.classList.add("hidden");
-    loyaltyCard.classList.add("hidden");
-    staffDashboard.classList.remove("hidden");
-
-    await loadBusinessCustomers(membership.business_id);
-    await loadStaffRecentActivity(membership.business_id);
-  } else {
-    await showCustomerCard(session.user);
+    await showAccountHome(session.user);
   }
-}
 }
 if (nextRewardCard) {
   nextRewardCard.addEventListener("click", () => {
