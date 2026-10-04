@@ -29,6 +29,14 @@ const cancelCreateBusinessButton =
 
 const saveBusinessButton =
   document.getElementById("saveBusinessButton");
+const newBusinessName =
+  document.getElementById("newBusinessName");
+
+const newReward5 =
+  document.getElementById("newReward5");
+
+const newReward10 =
+  document.getElementById("newReward10");
 const businessAccountList =
   document.getElementById("businessAccountList");
 
@@ -855,6 +863,54 @@ if (createBusinessButton && createBusinessPage && cancelCreateBusinessButton) {
   cancelCreateBusinessButton.addEventListener("click", () => {
     createBusinessPage.classList.add("hidden");
     accountHome.classList.remove("hidden");
+  });
+}
+
+if (saveBusinessButton) {
+  saveBusinessButton.addEventListener("click", async () => {
+    const businessName = newBusinessName.value.trim();
+    const reward5 = newReward5.value.trim();
+    const reward10 = newReward10.value.trim();
+
+    if (!businessName) {
+      showMessage("Please enter a business name.");
+      return;
+    }
+
+    const {
+  data: { user },
+} = await supabaseClient.auth.getUser();
+
+if (!user) {
+  showMessage("Please sign in again.");
+  return;
+}
+
+const slug = businessName
+  .toLowerCase()
+  .trim()
+  .replace(/[^a-z0-9]+/g, "-")
+  .replace(/^-|-$/g, "");
+
+const { data: business, error: businessError } =
+  await supabaseClient
+    .from("businesses")
+    .insert({
+      business_name: businessName,
+      owner_user_id: user.id,
+      slug: slug,
+      is_active: true,
+      reward_5: reward5 || null,
+      reward_10: reward10 || null,
+    })
+    .select()
+    .single();
+
+if (businessError) {
+  console.error("Could not create business:", businessError);
+  showMessage("Couldn't create your business. Please try again.");
+  return;
+}
   });
 }
 if (historyNavButton && historyBackButton) {
