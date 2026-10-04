@@ -21,7 +21,8 @@ const customerRewardsPage =
 
 const rewardsNavButton =
   document.getElementById("rewardsNavButton");
-
+const nextRewardCard =
+  document.querySelector(".next-reward-card");
 const rewardsBackButton =
   document.getElementById("rewardsBackButton");
 const historyNavButton =
@@ -717,7 +718,12 @@ async function startApp() {
     await showCustomerCard(session.user);
   }
 }
-
+if (nextRewardCard) {
+  nextRewardCard.addEventListener("click", () => {
+    customerHome.classList.add("hidden");
+    customerRewardsPage.classList.remove("hidden");
+  });
+}
 if (rewardsNavButton && rewardsBackButton) {
   rewardsNavButton.addEventListener("click", () => {
     customerHome.classList.add("hidden");
