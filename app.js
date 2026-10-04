@@ -18,7 +18,17 @@ const hearts = document.getElementById("hearts");
 const staffButton = document.getElementById("staffButton");
 const accountHome =
   document.getElementById("accountHome");
+const createBusinessButton =
+  document.getElementById("createBusinessButton");
 
+const createBusinessPage =
+  document.getElementById("createBusinessPage");
+
+const cancelCreateBusinessButton =
+  document.getElementById("cancelCreateBusinessButton");
+
+const saveBusinessButton =
+  document.getElementById("saveBusinessButton");
 const businessAccountList =
   document.getElementById("businessAccountList");
 
@@ -834,6 +844,17 @@ if (rewardsNavButton && rewardsBackButton) {
   rewardsBackButton.addEventListener("click", () => {
     customerRewardsPage.classList.add("hidden");
     customerHome.classList.remove("hidden");
+  });
+}
+if (createBusinessButton && createBusinessPage && cancelCreateBusinessButton) {
+  createBusinessButton.addEventListener("click", () => {
+    accountHome.classList.add("hidden");
+    createBusinessPage.classList.remove("hidden");
+  });
+
+  cancelCreateBusinessButton.addEventListener("click", () => {
+    createBusinessPage.classList.add("hidden");
+    accountHome.classList.remove("hidden");
   });
 }
 if (historyNavButton && historyBackButton) {
