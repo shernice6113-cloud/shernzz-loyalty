@@ -759,7 +759,7 @@ async function showAccountHome(user) {
 
   const { data: memberships, error } = await supabaseClient
     .from("business_members")
-    .select("business_id, role, is_active, businesses(name)")
+   .select("business_id, role, is_active, businesses(business_name)")
     .eq("user_id", user.id)
     .eq("is_active", true);
 
@@ -778,7 +778,7 @@ async function showAccountHome(user) {
       const businessButton = document.createElement("button");
       businessButton.type = "button";
       businessButton.className = "staff-button";
-      businessButton.textContent = `${membership.businesses?.name || "Your Business"} 💼`;
+     businessButton.textContent = `${membership.businesses?.business_name || "Your Business"} 💼`;
       businessButton.addEventListener("click", async () => {
         accountHome.classList.add("hidden");
         staffDashboard.classList.remove("hidden");
@@ -799,7 +799,7 @@ async function showAccountHome(user) {
     loyaltyButton.type = "button";
     loyaltyButton.className = "staff-button";
     loyaltyButton.textContent =
-      `${membership.businesses?.name || "Your Business"} Loyalty Card 💕`;
+      `${membership.businesses?.business_name || "Your Business"} Loyalty Card 💕`;
 
     loyaltyButton.addEventListener("click", async () => {
       accountHome.classList.add("hidden");
