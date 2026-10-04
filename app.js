@@ -498,6 +498,7 @@ async function openCustomerDetail(customer) {
   staffCustomerControls.classList.add("hidden");
   staffCustomerDetail.classList.remove("hidden");
   closeCustomerDetail.classList.remove("hidden");
+closeCustomerDetail.style.display = "block";
 
   const stamps = Math.max(
     0,
