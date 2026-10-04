@@ -380,6 +380,19 @@ document.getElementById("rewardsReady").textContent = rewardsUnlocked;
     row.addEventListener("click", () => openCustomerDetail(customer));
     customerList.appendChild(row);
   });
+  if (customerSearch) {
+  customerSearch.oninput = () => {
+    const searchTerm = customerSearch.value.toLowerCase().trim();
+
+    document.querySelectorAll(".customer-row").forEach((row) => {
+      const customerText = row.textContent.toLowerCase();
+
+      row.style.display = customerText.includes(searchTerm)
+        ? ""
+        : "none";
+    });
+  };
+}
 }
 
 async function loadStaffRecentActivity(businessId) {
