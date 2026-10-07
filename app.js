@@ -5,7 +5,30 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
+const urlParams = new URLSearchParams(window.location.search);
+const businessSlug = urlParams.get("business");
+let selectedBusiness = null;
 
+async function loadBusinessFromUrl() {
+  if (!businessSlug) {
+    return null;
+  }
+
+  const { data: business, error } = await supabaseClient
+    .from("businesses")
+    .select("id, business_name, slug, reward_5, reward_10")
+    .eq("slug", businessSlug)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Could not load business from URL:", error);
+    return null;
+  }
+
+  selectedBusiness = business;
+  return business;
+}
 const joinCard = document.querySelector(".join-card");
 const joinForm = document.getElementById("joinForm");
 const firstNameInput = document.getElementById("firstName");
@@ -856,6 +879,7 @@ staffBusinessName.textContent =
 }
 }
 async function startApp() {
+  await loadBusinessFromUrl();
   const {
     data: { session }
   } = await supabaseClient.auth.getSession();
