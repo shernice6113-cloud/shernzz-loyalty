@@ -929,7 +929,7 @@ if (businessError) {
     const { error: membershipError } = await supabaseClient
   .from("business_members")
   .insert({
-    business_id: newBusiness.id,
+    business_id: business.id,
     user_id: user.id,
     role: "owner",
     is_active: true
@@ -946,7 +946,7 @@ showMessage("Your loyalty program was created! 💕");
 createBusinessPage.classList.add("hidden");
 accountHome.classList.remove("hidden");
 
-await loadAccountHome();
+await showAccountHome(user);
   });
 }
 if (historyNavButton && historyBackButton) {
