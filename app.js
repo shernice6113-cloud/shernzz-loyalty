@@ -8,7 +8,7 @@ const supabaseClient = window.supabase.createClient(
 const urlParams = new URLSearchParams(window.location.search);
 const businessSlug = urlParams.get("business");
 let selectedBusiness = null;
-
+let activeLoyaltyBusinessId = null;
 async function loadBusinessFromUrl() {
   if (!businessSlug) {
     return null;
@@ -141,7 +141,7 @@ function showMessage(text) {
   message.textContent = text;
 }
 
-function renderHearts(stamps = 0) {
+function renderHearts(stamps = 0, reward5 = "25% off", reward10 = "50% off") {
   const safeStamps = Math.max(
     0,
     Math.min(10, Number(stamps) || 0)
@@ -167,18 +167,23 @@ function renderHearts(stamps = 0) {
     const remaining = 5 - safeStamps;
 
     nextRewardText.textContent =
-      `${remaining} more ${remaining === 1 ? "order" : "orders"} → 25% OFF`;
+      `${remaining} more ${remaining === 1 ? "order" : "orders"} → ${reward5}`;
   } else if (safeStamps < 10) {
     const remaining = 10 - safeStamps;
 
     nextRewardText.textContent =
-      `${remaining} more ${remaining === 1 ? "order" : "orders"} → 50% OFF`;
+      `${remaining} more ${remaining === 1 ? "order" : "orders"} → ${reward10}`;
   } else {
     nextRewardText.textContent =
-      "50% OFF reward unlocked 🎉";
+      `${reward10} reward unlocked 🎉`;
   }
 }
-function renderCustomerRewards(stamps = 0, rewardStatus = "none") {
+function renderCustomerRewards(
+  stamps = 0,
+  rewardStatus = "none",
+  reward5 = "25% off",
+  reward10 = "50% off"
+) {
   const safeStamps = Math.max(
     0,
     Math.min(10, Number(stamps) || 0)
@@ -192,12 +197,12 @@ function renderCustomerRewards(stamps = 0, rewardStatus = "none") {
   if (rewardStatus === "reward_5_redeemed") {
     reward5Status.textContent = "Redeemed ✓";
     reward5Message.textContent =
-      "Your 25% OFF reward has been used.";
+      `Your ${reward5} reward has been used.`;
     reward5Card.classList.add("redeemed");
   } else if (safeStamps >= 5) {
     reward5Status.textContent = "Unlocked 🎁";
     reward5Message.textContent =
-      "Your 25% OFF reward is ready to use.";
+     `Your ${reward5} reward is ready to use.`;
     reward5Card.classList.add("unlocked");
   } else {
     const remaining = 5 - safeStamps;
@@ -211,7 +216,7 @@ function renderCustomerRewards(stamps = 0, rewardStatus = "none") {
   if (rewardStatus === "reward_10_redeemed") {
     reward10Status.textContent = "Redeemed ✓";
     reward10Message.textContent =
-      "Your 50% OFF reward has been used.";
+      `Your ${reward10} reward has been used.`;
     reward10Card.classList.add("redeemed");
 
     // Reaching the 10th reward means the 5th milestone
@@ -219,14 +224,14 @@ function renderCustomerRewards(stamps = 0, rewardStatus = "none") {
     if (safeStamps >= 10) {
       reward5Status.textContent = "Redeemed ✓";
       reward5Message.textContent =
-        "Your 25% OFF reward from this cycle has been completed.";
+        `Your ${reward5} reward from this cycle has been completed.`;
       reward5Card.classList.remove("unlocked");
       reward5Card.classList.add("redeemed");
     }
   } else if (safeStamps >= 10) {
     reward10Status.textContent = "Unlocked 🎁";
     reward10Message.textContent =
-      "Your 50% OFF reward is ready to use.";
+      `Your ${reward10} reward is ready to use.`;
     reward10Card.classList.add("unlocked");
   } else {
     const remaining = 10 - safeStamps;
@@ -236,14 +241,30 @@ function renderCustomerRewards(stamps = 0, rewardStatus = "none") {
       `${remaining} more ${remaining === 1 ? "order" : "orders"} to unlock this reward.`;
   }
 }
-async function showCustomerCard(user) {
+async function showCustomerCard(user, businessId = null) {
   joinCard.classList.add("hidden");
   staffButton.classList.add("hidden");
-  const { data: customer, error } = await supabaseClient
-    .from("customers")
-    .select("first_name, stamps, reward_status")
-    .eq("user_id", user.id)
-    .maybeSingle();
+  const targetBusinessId = businessId || selectedBusiness?.id || 1;
+  activeLoyaltyBusinessId = targetBusinessId;
+ const { data: loyaltyBusiness, error: loyaltyBusinessError } =
+  await supabaseClient
+    .from("businesses")
+    .select("business_name, reward_5, reward_10")
+    .eq("id", targetBusinessId)
+    .single();
+
+if (loyaltyBusinessError) {
+  console.error(
+    "Could not load loyalty business:",
+    loyaltyBusinessError
+  );
+}
+const { data: customer, error } = await supabaseClient
+  .from("customers")
+  .select("first_name, stamps, reward_status, business_id")
+  .eq("user_id", user.id)
+  .eq("business_id", targetBusinessId)
+  .maybeSingle();
 
   if (error) {
     console.error(error);
@@ -263,13 +284,14 @@ async function showCustomerCard(user) {
       .from("customers")
       .insert({
         user_id: user.id,
+       business_id: targetBusinessId,
         first_name: firstName,
         stamps: 0,
         email: user.email,
         reward_status: "none"
       })
-      .select("first_name, stamps, reward_status, user_id")
-      .single();
+     .select("first_name, stamps, reward_status, user_id, business_id")
+.single();
 
     if (insertError) {
       console.error(insertError);
@@ -285,10 +307,16 @@ async function showCustomerCard(user) {
   welcomeName.textContent =
     `Hey ${loyaltyCustomer.first_name} 💕`;
 
-  renderHearts(loyaltyCustomer.stamps);
+ renderHearts(
+  loyaltyCustomer.stamps,
+  loyaltyBusiness?.reward_5 || "25% off",
+  loyaltyBusiness?.reward_10 || "50% off"
+);
 renderCustomerRewards(
   loyaltyCustomer.stamps,
-  loyaltyCustomer.reward_status
+  loyaltyCustomer.reward_status,
+  loyaltyBusiness?.reward_5 || "25% off",
+  loyaltyBusiness?.reward_10 || "50% off"
 );
   joinForm.style.display = "none";
   loyaltyCard.classList.remove("hidden");
@@ -314,9 +342,8 @@ joinForm.addEventListener("submit", async (event) => {
     firstName
   );
 
-  const redirectUrl =
-    window.location.origin + window.location.pathname;
-
+ const redirectUrl =
+  window.location.origin + window.location.pathname + window.location.search;
   const { error } =
     await supabaseClient.auth.signInWithOtp({
       email: email,
@@ -871,7 +898,7 @@ staffBusinessName.textContent =
 
       loyaltyButton.addEventListener("click", async () => {
         accountHome.classList.add("hidden");
-        await showCustomerCard(user);
+       await showCustomerCard(user, customer.business_id);
       });
 
       loyaltyAccountList.appendChild(loyaltyButton);
@@ -885,9 +912,13 @@ async function startApp() {
     data: { session }
   } = await supabaseClient.auth.getSession();
 
-  if (session?.user) {
+ if (session?.user) {
+  if (selectedBusiness) {
+    await showCustomerCard(session.user, selectedBusiness.id);
+  } else {
     await showAccountHome(session.user);
   }
+}
 }
 if (nextRewardCard) {
   nextRewardCard.addEventListener("click", () => {
@@ -1029,6 +1060,7 @@ async function loadCustomerHistoryPage() {
     .from("customers")
     .select("id, business_id")
     .eq("user_id", session.user.id)
+    .eq("business_id", activeLoyaltyBusinessId)
     .maybeSingle();
 
   if (customerError || !customer) {
