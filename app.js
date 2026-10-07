@@ -367,9 +367,16 @@ staffButton.addEventListener("click", async () => {
   showMessage("");
 });
 
-closeStaffDashboard.addEventListener("click", () => {
+closeStaffDashboard.addEventListener("click", async () => {
   staffDashboard.classList.add("hidden");
-  loyaltyCard.classList.remove("hidden");
+
+  const {
+    data: { session }
+  } = await supabaseClient.auth.getSession();
+
+  if (session?.user) {
+    await showAccountHome(session.user);
+  }
 });
 
 closeCustomerDetail.addEventListener("click", () => {
