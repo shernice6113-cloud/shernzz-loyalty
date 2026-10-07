@@ -886,8 +886,7 @@ if (rewardsNavButton && rewardsBackButton) {
 if (backToAccountButton) {
   backToAccountButton.addEventListener("click", async () => {
     loyaltyCard.classList.add("hidden");
-    customerHome.classList.add("hidden");
-
+   
     const {
       data: { session }
     } = await supabaseClient.auth.getSession();
