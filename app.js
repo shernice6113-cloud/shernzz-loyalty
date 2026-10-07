@@ -20,7 +20,8 @@ const accountHome =
   document.getElementById("accountHome");
 const createBusinessButton =
   document.getElementById("createBusinessButton");
-
+const backToAccountButton =
+  document.getElementById("backToAccountButton");
 const createBusinessPage =
   document.getElementById("createBusinessPage");
 
@@ -879,6 +880,21 @@ if (rewardsNavButton && rewardsBackButton) {
   rewardsBackButton.addEventListener("click", () => {
     customerRewardsPage.classList.add("hidden");
     customerHome.classList.remove("hidden");
+  });
+}
+
+if (backToAccountButton) {
+  backToAccountButton.addEventListener("click", async () => {
+    loyaltyCard.classList.add("hidden");
+    customerHome.classList.add("hidden");
+
+    const {
+      data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (session?.user) {
+      await showAccountHome(session.user);
+    }
   });
 }
 if (createBusinessButton && createBusinessPage && cancelCreateBusinessButton) {
