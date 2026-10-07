@@ -371,7 +371,6 @@ staffButton.addEventListener("click", async () => {
 closeStaffDashboard.addEventListener("click", async () => {
   staffDashboard.classList.add("hidden");
   loyaltyCard.classList.add("hidden");
-  customerHome.classList.add("hidden");
 
   const {
     data: { session }
