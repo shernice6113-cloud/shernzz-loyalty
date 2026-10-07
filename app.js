@@ -27,6 +27,7 @@ async function loadBusinessFromUrl() {
   }
 
   selectedBusiness = business;
+  console.log("Business loaded from URL:", business);
   return business;
 }
 const joinCard = document.querySelector(".join-card");
