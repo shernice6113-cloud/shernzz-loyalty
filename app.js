@@ -104,6 +104,8 @@ const reward10Message =
   document.getElementById("reward10Message");
 
 const staffDashboard = document.getElementById("staffDashboard");
+const staffBusinessName =
+  document.getElementById("staffBusinessName");
 const closeStaffDashboard = document.getElementById("closeStaffDashboard");
 const customerList = document.getElementById("customerList");
 const staffRecentActivity =
@@ -800,7 +802,8 @@ async function showAccountHome(user) {
       businessButton.addEventListener("click", async () => {
         accountHome.classList.add("hidden");
         staffDashboard.classList.remove("hidden");
-
+staffBusinessName.textContent =
+  `${membership.businesses?.business_name || "Business"} • STAFF`;
         await loadBusinessCustomers(membership.business_id);
         await loadStaffRecentActivity(membership.business_id);
       });
