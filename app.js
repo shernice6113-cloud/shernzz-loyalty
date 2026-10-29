@@ -329,7 +329,8 @@ const { data: customer, error } = await supabaseClient
 
     loyaltyCustomer = data;
   }
-
+const customerBusinessTitle = document.getElementById("customerBusinessTitle");
+if (customerBusinessTitle) customerBusinessTitle.textContent = loyaltyBusiness?.business_name || "SHERNZZ LOYALTY";
   welcomeName.textContent =
     `Hey ${loyaltyCustomer.first_name} 💕`;
 
