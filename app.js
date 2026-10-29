@@ -15,10 +15,9 @@ async function loadBusinessFromUrl() {
   }
 
   const { data: business, error } = await supabaseClient
-    .from("businesses")
-    .select("id, business_name, slug, reward_5, reward_10")
+  .from("public_business_profiles")
+  .select("id, business_name, slug, reward_5, reward_10")
     .eq("slug", businessSlug)
-    .eq("is_active", true)
     .maybeSingle();
 
   if (error) {
