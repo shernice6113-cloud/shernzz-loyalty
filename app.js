@@ -26,9 +26,24 @@ async function loadBusinessFromUrl() {
     return null;
   }
 
-  selectedBusiness = business;
-  console.log("Business loaded from URL:", business);
-  return business;
+ selectedBusiness = business;
+
+if (business) {
+  const joinTitle = document.getElementById("joinBusinessTitle");
+  const joinDescription = document.getElementById("joinBusinessDescription");
+
+  if (joinTitle) {
+    joinTitle.textContent = `Join ${business.business_name} 💕`;
+  }
+
+  if (joinDescription) {
+    joinDescription.textContent =
+      `Shop. Collect stamps. Get rewarded. Unlock exclusive rewards from ${business.business_name}!`;
+  }
+}
+
+console.log("Business loaded from URL:", business);
+return business;
 }
 const joinCard = document.querySelector(".join-card");
 const joinForm = document.getElementById("joinForm");
