@@ -198,6 +198,16 @@ function renderCustomerRewards(
   reward5 = "25% off",
   reward10 = "50% off"
 ) {
+  const reward5Title = document.getElementById("reward5Title");
+
+if (reward5Title) {
+  reward5Title.textContent = reward5;
+}
+  const reward10Title = document.getElementById("reward10Title");
+
+if (reward10Title) {
+  reward10Title.textContent = reward10;
+}
   const safeStamps = Math.max(
     0,
     Math.min(10, Number(stamps) || 0)
