@@ -156,6 +156,8 @@ function showMessage(text) {
 }
 
 function renderHearts(stamps = 0, reward5 = "25% off", reward10 = "50% off") {
+  document.getElementById("homeReward5").textContent = reward5;
+document.getElementById("homeReward10").textContent = reward10;
   const safeStamps = Math.max(
     0,
     Math.min(10, Number(stamps) || 0)
