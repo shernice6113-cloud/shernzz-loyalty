@@ -1175,17 +1175,69 @@ staffBusinessName.textContent =
 }
 async function startApp() {
   await loadBusinessFromUrl();
+
   const {
     data: { session }
   } = await supabaseClient.auth.getSession();
 
- if (session?.user) {
+  if (!session?.user) return;
+
+  const savedPage = getRememberedPage();
+
+  if (savedPage?.page === "createBusiness") {
+    await showAccountHome(session.user);
+    accountHome.classList.add("hidden");
+    createBusinessPage.classList.remove("hidden");
+    rememberPage("createBusiness");
+    return;
+  }
+
+  if (savedPage?.page === "staffDashboard" && savedPage.businessId) {
+    const { data: membership, error } = await supabaseClient
+      .from("business_members")
+      .select("business_id, role, is_active, businesses(business_name)")
+      .eq("user_id", session.user.id)
+      .eq("business_id", savedPage.businessId)
+      .eq("is_active", true)
+      .maybeSingle();
+
+    if (!error && membership) {
+      await showAccountHome(session.user);
+
+      accountHome.classList.add("hidden");
+      staffDashboard.classList.remove("hidden");
+
+      staffBusinessName.textContent =
+        `${membership.businesses?.business_name || "Business"} • STAFF`;
+
+      ownerLogoSettings.classList.toggle(
+        "hidden",
+        membership.role !== "owner"
+      );
+
+      await loadBusinessCustomers(membership.business_id);
+      await loadStaffRecentActivity(membership.business_id);
+
+      rememberPage("staffDashboard", membership.business_id);
+      return;
+    }
+  }
+
+  if (savedPage?.page === "loyaltyCard" && savedPage.businessId) {
+    await showCustomerCard(session.user, savedPage.businessId);
+    return;
+  }
+
+  if (savedPage?.page === "accountHome") {
+    await showAccountHome(session.user);
+    return;
+  }
+
   if (selectedBusiness) {
     await showCustomerCard(session.user, selectedBusiness.id);
   } else {
     await showAccountHome(session.user);
   }
-}
 }
 if (nextRewardCard) {
   nextRewardCard.addEventListener("click", () => {
