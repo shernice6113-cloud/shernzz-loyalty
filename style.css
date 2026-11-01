@@ -32,7 +32,7 @@ body {
 }
 
 .platform-business-name {
-  content: "SHERNZZ  •  CREATIONS & CO";
+  content: none;
   display: block;
   position: absolute;
   top: 112px;
