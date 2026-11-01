@@ -45,6 +45,23 @@ if (platformLogo) {
     .toUpperCase();
 
   platformLogo.textContent = initials;
+
+if (business.logo_url) {
+  platformLogo.textContent = "";
+
+  const logoImg = document.createElement("img");
+  logoImg.src = business.logo_url;
+  logoImg.alt = `${business.business_name} logo`;
+  logoImg.style.width = "100%";
+  logoImg.style.height = "100%";
+  logoImg.style.objectFit = "contain";
+
+  logoImg.onerror = () => {
+    platformLogo.textContent = initials;
+  };
+
+  platformLogo.appendChild(logoImg);
+}
 }
   const joinTitle = document.getElementById("joinBusinessTitle");
   const joinDescription = document.getElementById("joinBusinessDescription");
