@@ -1129,6 +1129,10 @@ async function showAccountHome(user) {
         rememberPage("staffDashboard", membership.business_id);
         accountHome.classList.add("hidden");
         staffDashboard.classList.remove("hidden");
+        ownerLogoSettings.classList.toggle(
+  "hidden",
+  membership.role !== "owner"
+);
 staffBusinessName.textContent =
   `${membership.businesses?.business_name || "Business"} • STAFF`;
         await loadBusinessCustomers(membership.business_id);
