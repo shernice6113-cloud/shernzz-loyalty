@@ -125,6 +125,47 @@ logoZoom.addEventListener("input", () => {
   logoCropImage.style.transform = `scale(${zoom})`;
 });
 
+let logoDragX = 0;
+let logoDragY = 0;
+let logoPointerX = 0;
+let logoPointerY = 0;
+let logoIsDragging = false;
+
+function updateLogoPosition() {
+  const zoom = Number(logoZoom.value);
+
+  logoCropImage.style.transform =
+    `translate(${logoDragX}px, ${logoDragY}px) scale(${zoom})`;
+}
+
+const logoCropFrame = document.querySelector(".logo-crop-frame");
+
+logoCropFrame.addEventListener("pointerdown", (event) => {
+  logoIsDragging = true;
+  logoPointerX = event.clientX;
+  logoPointerY = event.clientY;
+  logoCropFrame.setPointerCapture(event.pointerId);
+});
+
+logoCropFrame.addEventListener("pointermove", (event) => {
+  if (!logoIsDragging) return;
+
+  logoDragX += event.clientX - logoPointerX;
+  logoDragY += event.clientY - logoPointerY;
+
+  logoPointerX = event.clientX;
+  logoPointerY = event.clientY;
+
+  updateLogoPosition();
+});
+
+function stopLogoDragging() {
+  logoIsDragging = false;
+}
+
+logoCropFrame.addEventListener("pointerup", stopLogoDragging);
+logoCropFrame.addEventListener("pointercancel", stopLogoDragging);
+
 let logoObjectUrl = null;
 
 newBusinessLogo.addEventListener("change", () => {
