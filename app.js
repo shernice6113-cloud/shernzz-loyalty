@@ -120,6 +120,11 @@ const logoZoom = document.getElementById("logoZoom");
 const confirmLogoCrop = document.getElementById("confirmLogoCrop");
 const cancelLogoCrop = document.getElementById("cancelLogoCrop");
 
+logoZoom.addEventListener("input", () => {
+  const zoom = Number(logoZoom.value);
+  logoCropImage.style.transform = `scale(${zoom})`;
+});
+
 let logoObjectUrl = null;
 
 newBusinessLogo.addEventListener("change", () => {
