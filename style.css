@@ -19,7 +19,7 @@ body {
 }
 
 .platform-logo {
-  content: "SC";
+ content: none;
   display: block;
   width: 100%;
   padding-top: 48px;
@@ -31,7 +31,7 @@ body {
   letter-spacing: 2px;
 }
 
-body::after {
+.platform-business-name {
   content: "SHERNZZ  •  CREATIONS & CO";
   display: block;
   position: absolute;
