@@ -141,6 +141,8 @@ const logoZoom = document.getElementById("logoZoom");
 const confirmLogoCrop = document.getElementById("confirmLogoCrop");
 const cancelLogoCrop = document.getElementById("cancelLogoCrop");
 let croppedLogoFile = null;
+let logoEditorMode = "create";
+let editingLogoBusinessId = null;
 logoZoom.addEventListener("input", updateLogoPosition);
 
 let logoDragX = 0;
@@ -219,7 +221,7 @@ confirmLogoCrop.addEventListener("click", () => {
     imageHeight * zoom * (512 / size)
   );
 
-  canvas.toBlob((blob) => {
+ canvas.toBlob(async (blob) => {
     if (!blob) {
       alert("Could not crop your logo. Please try again.");
       return;
@@ -232,10 +234,75 @@ confirmLogoCrop.addEventListener("click", () => {
     );
 
     logoCropper.classList.add("hidden");
-    alert("Your circular logo has been saved! 💗");
+
+if (logoEditorMode === "edit") {
+  await updateExistingBusinessLogo();
+} else {
+  alert("Your circular logo has been saved! 💗");
+}
   }, "image/png");
 });
+async function updateExistingBusinessLogo() {
+  if (!croppedLogoFile || !editingLogoBusinessId) {
+    alert("Please select and crop a logo first.");
+    return;
+  }
 
+  const { data: { user }, error: authError } =
+    await supabaseClient.auth.getUser();
+
+  if (authError || !user) {
+    alert("Please sign in again.");
+    return;
+  }
+
+  const { data: business, error: businessError } =
+    await supabaseClient
+      .from("businesses")
+      .select("id")
+      .eq("id", editingLogoBusinessId)
+      .eq("owner_user_id", user.id)
+      .maybeSingle();
+
+  if (businessError || !business) {
+    alert("Only the business owner can change this logo.");
+    return;
+  }
+
+  const filePath = `${business.id}/${crypto.randomUUID()}.png`;
+
+  const { error: uploadError } = await supabaseClient.storage
+    .from("business-logos")
+    .upload(filePath, croppedLogoFile, {
+      contentType: "image/png",
+      upsert: false
+    });
+
+  if (uploadError) {
+    console.error("Logo upload failed:", uploadError);
+    alert("Couldn't upload the logo. Please try again.");
+    return;
+  }
+
+  const { data: logoData } = supabaseClient.storage
+    .from("business-logos")
+    .getPublicUrl(filePath);
+
+  const { error: saveError } = await supabaseClient
+    .from("businesses")
+    .update({ logo_url: logoData.publicUrl })
+    .eq("id", business.id)
+    .eq("owner_user_id", user.id);
+
+  if (saveError) {
+    console.error("Logo update failed:", saveError);
+    alert("Couldn't save the new logo. Please try again.");
+    return;
+  }
+
+  croppedLogoFile = null;
+  alert("Your business logo has been updated! 💗");
+}
 cancelLogoCrop.addEventListener("click", () => {
   croppedLogoFile = null;
   logoDragX = 0;
@@ -253,7 +320,19 @@ cancelLogoCrop.addEventListener("click", () => {
 });
 
 let logoObjectUrl = null;
+editBusinessLogoInput.addEventListener("change", () => {
+  const file = editBusinessLogoInput.files?.[0];
 
+  if (!file) return;
+
+  logoEditorMode = "edit";
+
+  const transfer = new DataTransfer();
+  transfer.items.add(file);
+
+  newBusinessLogo.files = transfer.files;
+  newBusinessLogo.dispatchEvent(new Event("change"));
+});
 newBusinessLogo.addEventListener("change", () => {
   croppedLogoFile = null;
 logoDragX = 0;
@@ -1131,6 +1210,7 @@ async function showAccountHome(user) {
      businessButton.textContent = `${membership.businesses?.business_name || "Your Business"} 💼`;
       businessButton.addEventListener("click", async () => {
         rememberPage("staffDashboard", membership.business_id);
+        editingLogoBusinessId = membership.business_id;
         accountHome.classList.add("hidden");
         staffDashboard.classList.remove("hidden");
         ownerLogoSettings.classList.toggle(
@@ -1210,6 +1290,7 @@ async function startApp() {
       .maybeSingle();
 
     if (!error && membership) {
+      editingLogoBusinessId = membership.business_id;
       await showAccountHome(session.user);
 
       accountHome.classList.add("hidden");
@@ -1280,6 +1361,8 @@ if (backToAccountButton) {
 }
 if (createBusinessButton && createBusinessPage && cancelCreateBusinessButton) {
   createBusinessButton.addEventListener("click", () => {
+    logoEditorMode = "create";
+editingLogoBusinessId = null;
     rememberPage("createBusiness");
     accountHome.classList.add("hidden");
     createBusinessPage.classList.remove("hidden");
