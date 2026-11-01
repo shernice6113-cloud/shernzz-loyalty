@@ -28,6 +28,11 @@ async function loadBusinessFromUrl() {
  selectedBusiness = business;
 
 if (business) {
+  const platformBusinessName = document.getElementById("platformBusinessName");
+
+if (platformBusinessName) {
+  platformBusinessName.textContent = business.business_name;
+}
   const joinTitle = document.getElementById("joinBusinessTitle");
   const joinDescription = document.getElementById("joinBusinessDescription");
 
