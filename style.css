@@ -819,12 +819,14 @@ button {
   }
 }
 
-/* Keep uploaded business logos at a reasonable size */
+
+/* Circular business logo */
 #platformLogo {
-  width: 90px;
-  height: 90px;
-  max-width: 90px;
-  max-height: 90px;
+  width: 150px;
+  height: 150px;
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 50%;
   overflow: hidden;
   margin: 0 auto;
   flex-shrink: 0;
@@ -834,5 +836,6 @@ button {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  border-radius: 50%;
 }
