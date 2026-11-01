@@ -145,6 +145,26 @@ newBusinessLogo.addEventListener("change", () => {
 
   logoObjectUrl = URL.createObjectURL(file);
   logoCropImage.src = logoObjectUrl;
+  
+logoCropImage.onload = () => {
+  const frame = document.querySelector(".logo-crop-frame");
+  const size = frame.clientWidth - 6;
+
+  const scale = Math.max(
+    size / logoCropImage.naturalWidth,
+    size / logoCropImage.naturalHeight
+  );
+
+  const width = logoCropImage.naturalWidth * scale;
+  const height = logoCropImage.naturalHeight * scale;
+
+  logoCropImage.style.width = `${width}px`;
+  logoCropImage.style.height = `${height}px`;
+  logoCropImage.style.left = `${(size - width) / 2}px`;
+  logoCropImage.style.top = `${(size - height) / 2}px`;
+  logoCropImage.style.transform = "none";
+};
+
   logoZoom.value = "1";
   logoCropper.classList.remove("hidden");
 });
