@@ -830,6 +830,8 @@ button {
   overflow: hidden;
   margin: 0 auto;
   flex-shrink: 0;
+  aspect-ratio: 1 / 1;
+padding: 0;
 }
 
 #platformLogo img {
@@ -838,4 +840,6 @@ button {
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
+  min-width: 100%;
+min-height: 100%;
 }
