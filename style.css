@@ -818,3 +818,21 @@ button {
     font-size: 29px;
   }
 }
+
+/* Keep uploaded business logos at a reasonable size */
+#platformLogo {
+  width: 90px;
+  height: 90px;
+  max-width: 90px;
+  max-height: 90px;
+  overflow: hidden;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+
+#platformLogo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
