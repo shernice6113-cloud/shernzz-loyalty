@@ -113,6 +113,13 @@ const newReward10 =
   document.getElementById("newReward10");
 const newBusinessLogo =
   document.getElementById("newBusinessLogo");
+
+const logoCropper = document.getElementById("logoCropper");
+const logoCropImage = document.getElementById("logoCropImage");
+const logoZoom = document.getElementById("logoZoom");
+const confirmLogoCrop = document.getElementById("confirmLogoCrop");
+const cancelLogoCrop = document.getElementById("cancelLogoCrop");
+
 const businessAccountList =
   document.getElementById("businessAccountList");
 
