@@ -16,7 +16,7 @@ async function loadBusinessFromUrl() {
 
   const { data: business, error } = await supabaseClient
   .from("public_business_profiles")
-  .select("id, business_name, slug, reward_5, reward_10")
+  .select("id, business_name, slug, reward_5, reward_10, logo_url")
     .eq("slug", businessSlug)
     .maybeSingle();
 
