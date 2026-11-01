@@ -209,8 +209,7 @@ confirmLogoCrop.addEventListener("click", () => {
       "business-logo.png",
       { type: "image/png" }
     );
-const previewUrl = URL.createObjectURL(blob);
-window.open(previewUrl, "_blank");
+
     logoCropper.classList.add("hidden");
     alert("Your circular logo has been saved! 💗");
   }, "image/png");
