@@ -853,3 +853,50 @@ button {
   border-radius: 50%;
   flex-shrink: 0;
 }
+
+/* Business logo cropping editor */
+.logo-cropper {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid rgba(255, 120, 183, 0.3);
+  border-radius: 22px;
+  background: #211720;
+  text-align: center;
+}
+
+.logo-cropper h3 {
+  color: #ff78b7;
+  margin-bottom: 8px;
+}
+
+.logo-cropper p {
+  color: #d6c6d0;
+  font-size: 14px;
+}
+
+.logo-crop-frame {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  max-width: 100%;
+  margin: 20px auto;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 3px solid #ff78b7;
+  background: #100c12;
+  touch-action: none;
+  cursor: grab;
+}
+
+.logo-crop-frame img {
+  position: absolute;
+  max-width: none;
+  user-select: none;
+  pointer-events: none;
+  transform-origin: center center;
+}
+
+#logoZoom {
+  width: 100%;
+  accent-color: #ff78b7;
+}
