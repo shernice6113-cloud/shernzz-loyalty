@@ -1226,6 +1226,7 @@ if (createBusinessButton && createBusinessPage && cancelCreateBusinessButton) {
   });
 
   cancelCreateBusinessButton.addEventListener("click", () => {
+    rememberPage("accountHome");
     createBusinessPage.classList.add("hidden");
     accountHome.classList.remove("hidden");
   });
