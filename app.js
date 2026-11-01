@@ -350,6 +350,10 @@ const reward10Message =
   document.getElementById("reward10Message");
 
 const staffDashboard = document.getElementById("staffDashboard");
+
+const ownerLogoSettings = document.getElementById("ownerLogoSettings");
+const editBusinessLogoButton = document.getElementById("editBusinessLogoButton");
+
 const staffBusinessName =
   document.getElementById("staffBusinessName");
 const closeStaffDashboard = document.getElementById("closeStaffDashboard");
