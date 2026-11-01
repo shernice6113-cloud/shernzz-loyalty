@@ -120,6 +120,35 @@ const logoZoom = document.getElementById("logoZoom");
 const confirmLogoCrop = document.getElementById("confirmLogoCrop");
 const cancelLogoCrop = document.getElementById("cancelLogoCrop");
 
+let logoObjectUrl = null;
+
+newBusinessLogo.addEventListener("change", () => {
+  const file = newBusinessLogo.files?.[0];
+
+  if (logoObjectUrl) {
+    URL.revokeObjectURL(logoObjectUrl);
+    logoObjectUrl = null;
+  }
+
+  if (!file) {
+    logoCropper.classList.add("hidden");
+    return;
+  }
+
+  if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)
+      || file.size > 2 * 1024 * 1024) {
+    alert("Choose a PNG, JPG, or WebP image under 2 MB.");
+    newBusinessLogo.value = "";
+    logoCropper.classList.add("hidden");
+    return;
+  }
+
+  logoObjectUrl = URL.createObjectURL(file);
+  logoCropImage.src = logoObjectUrl;
+  logoZoom.value = "1";
+  logoCropper.classList.remove("hidden");
+});
+
 const businessAccountList =
   document.getElementById("businessAccountList");
 
