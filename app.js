@@ -9,6 +9,27 @@ const urlParams = new URLSearchParams(window.location.search);
 const businessSlug = urlParams.get("business");
 let selectedBusiness = null;
 let activeLoyaltyBusinessId = null;
+const PAGE_MEMORY_KEY = "shernzz_current_page";
+
+function rememberPage(page, businessId = null) {
+  sessionStorage.setItem(
+    PAGE_MEMORY_KEY,
+    JSON.stringify({
+      page,
+      businessId
+    })
+  );
+}
+
+function getRememberedPage() {
+  try {
+    return JSON.parse(
+      sessionStorage.getItem(PAGE_MEMORY_KEY) || "null"
+    );
+  } catch {
+    return null;
+  }
+}
 async function loadBusinessFromUrl() {
   if (!businessSlug) {
     return null;
