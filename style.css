@@ -18,11 +18,12 @@ body {
     #050506;
 }
 
+
 .platform-logo {
- content: none;
-  display: block;
-  width: 100%;
-  padding-top: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0;
   text-align: center;
   color: #ff78b7;
   font-family: Georgia, "Times New Roman", serif;
@@ -32,17 +33,16 @@ body {
 }
 
 .platform-business-name {
-  content: none;
   display: block;
-  position: absolute;
-  top: 112px;
-  left: 0;
+  position: static;
   width: 100%;
+  margin-top: 16px;
   text-align: center;
   color: #f5dce8;
   font-size: 13px;
   letter-spacing: 5px;
 }
+
 
 .app-shell {
   width: min(92%, 650px);
