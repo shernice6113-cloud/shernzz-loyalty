@@ -504,6 +504,7 @@ async function showCustomerCard(user, businessId = null) {
   staffButton.classList.add("hidden");
   const targetBusinessId = businessId || selectedBusiness?.id || 1;
   activeLoyaltyBusinessId = targetBusinessId;
+  rememberPage("loyaltyCard", targetBusinessId);
  const { data: loyaltyBusiness, error: loyaltyBusinessError } =
   await supabaseClient
     .from("businesses")
