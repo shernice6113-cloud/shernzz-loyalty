@@ -374,7 +374,11 @@ const staffDashboard = document.getElementById("staffDashboard");
 
 const ownerLogoSettings = document.getElementById("ownerLogoSettings");
 const editBusinessLogoButton = document.getElementById("editBusinessLogoButton");
+const editBusinessLogoInput = document.getElementById("editBusinessLogoInput");
 
+editBusinessLogoButton.addEventListener("click", () => {
+  editBusinessLogoInput.click();
+});
 const staffBusinessName =
   document.getElementById("staffBusinessName");
 const closeStaffDashboard = document.getElementById("closeStaffDashboard");
