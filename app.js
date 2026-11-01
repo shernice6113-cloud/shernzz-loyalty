@@ -320,19 +320,7 @@ cancelLogoCrop.addEventListener("click", () => {
 });
 
 let logoObjectUrl = null;
-editBusinessLogoInput.addEventListener("change", () => {
-  const file = editBusinessLogoInput.files?.[0];
 
-  if (!file) return;
-
-  logoEditorMode = "edit";
-
-  const transfer = new DataTransfer();
-  transfer.items.add(file);
-
-  newBusinessLogo.files = transfer.files;
-  newBusinessLogo.dispatchEvent(new Event("change"));
-});
 newBusinessLogo.addEventListener("change", () => {
   croppedLogoFile = null;
 logoDragX = 0;
@@ -454,7 +442,19 @@ const staffDashboard = document.getElementById("staffDashboard");
 const ownerLogoSettings = document.getElementById("ownerLogoSettings");
 const editBusinessLogoButton = document.getElementById("editBusinessLogoButton");
 const editBusinessLogoInput = document.getElementById("editBusinessLogoInput");
+editBusinessLogoInput.addEventListener("change", () => {
+  const file = editBusinessLogoInput.files?.[0];
 
+  if (!file) return;
+
+  logoEditorMode = "edit";
+
+  const transfer = new DataTransfer();
+  transfer.items.add(file);
+
+  newBusinessLogo.files = transfer.files;
+  newBusinessLogo.dispatchEvent(new Event("change"));
+});
 editBusinessLogoButton.addEventListener("click", () => {
   editBusinessLogoInput.click();
 });
