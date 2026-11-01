@@ -1125,6 +1125,7 @@ async function showAccountHome(user) {
       businessButton.className = "staff-button";
      businessButton.textContent = `${membership.businesses?.business_name || "Your Business"} 💼`;
       businessButton.addEventListener("click", async () => {
+        rememberPage("staffDashboard", membership.business_id);
         accountHome.classList.add("hidden");
         staffDashboard.classList.remove("hidden");
 staffBusinessName.textContent =
