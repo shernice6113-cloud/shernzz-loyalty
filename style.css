@@ -18,7 +18,7 @@ body {
     #050506;
 }
 
-body::before {
+.platform-logo {
   content: "SC";
   display: block;
   width: 100%;
