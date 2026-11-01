@@ -169,7 +169,7 @@ confirmLogoCrop.addEventListener("click", () => {
     return;
   }
 
-  const size = logoCropFrame.clientWidth;
+ const size = logoCropFrame.clientWidth - 6;
   const zoom = Number(logoZoom.value);
 
   const imageWidth = logoCropImage.clientWidth;
