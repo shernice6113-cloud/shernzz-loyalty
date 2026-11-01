@@ -111,6 +111,8 @@ const newReward5 =
 
 const newReward10 =
   document.getElementById("newReward10");
+const newBusinessLogo =
+  document.getElementById("newBusinessLogo");
 const businessAccountList =
   document.getElementById("businessAccountList");
 
@@ -1030,6 +1032,25 @@ if (saveBusinessButton) {
     const businessName = newBusinessName.value.trim();
     const reward5 = newReward5.value.trim();
     const reward10 = newReward10.value.trim();
+    const logoFile = newBusinessLogo?.files?.[0] || null;
+
+if (logoFile) {
+  const allowedTypes = [
+    "image/png",
+    "image/jpeg",
+    "image/webp"
+  ];
+
+  if (!allowedTypes.includes(logoFile.type)) {
+    showMessage("Please choose a PNG, JPG, or WebP logo.");
+    return;
+  }
+
+  if (logoFile.size > 2 * 1024 * 1024) {
+    showMessage("Your logo must be smaller than 2 MB.");
+    return;
+  }
+}
 
     if (!businessName) {
       showMessage("Please enter a business name.");
@@ -1084,7 +1105,44 @@ if (membershipError) {
   showMessage("Business created, but couldn't connect it to your account.");
   return;
 }
+if (logoFile) {
+  const extension = logoFile.type === "image/png"
+    ? "png"
+    : logoFile.type === "image/webp"
+      ? "webp"
+      : "jpg";
 
+  const filePath = `${business.id}/${crypto.randomUUID()}.${extension}`;
+
+  const { error: uploadError } = await supabaseClient.storage
+    .from("business-logos")
+    .upload(filePath, logoFile, {
+      contentType: logoFile.type,
+      upsert: false
+    });
+
+  if (uploadError) {
+    console.error("Logo upload failed:", uploadError);
+    showMessage("Business created, but the logo couldn't be uploaded.");
+    return;
+  }
+
+  const { data: logoData } = supabaseClient.storage
+    .from("business-logos")
+    .getPublicUrl(filePath);
+
+  const { error: logoSaveError } = await supabaseClient
+    .from("businesses")
+    .update({ logo_url: logoData.publicUrl })
+    .eq("id", business.id)
+    .eq("owner_user_id", user.id);
+
+  if (logoSaveError) {
+    console.error("Could not save logo URL:", logoSaveError);
+    showMessage("Business created, but the logo couldn't be saved.");
+    return;
+  }
+}
 showMessage("Your loyalty program was created! 💕");
 
 createBusinessPage.classList.add("hidden");
