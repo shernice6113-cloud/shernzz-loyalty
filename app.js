@@ -648,6 +648,11 @@ staffButton.addEventListener("click", async () => {
     return;
   }
 
+ownerLogoSettings.classList.toggle(
+  "hidden",
+  membership.role !== "owner"
+);
+
   loyaltyCard.classList.add("hidden");
   joinCard.classList.add("hidden");
   staffButton.classList.add("hidden");
