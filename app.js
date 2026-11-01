@@ -215,6 +215,22 @@ confirmLogoCrop.addEventListener("click", () => {
   }, "image/png");
 });
 
+cancelLogoCrop.addEventListener("click", () => {
+  croppedLogoFile = null;
+  logoDragX = 0;
+  logoDragY = 0;
+
+  newBusinessLogo.value = "";
+  logoCropImage.removeAttribute("src");
+  logoZoom.value = "1";
+  logoCropper.classList.add("hidden");
+
+  if (logoObjectUrl) {
+    URL.revokeObjectURL(logoObjectUrl);
+    logoObjectUrl = null;
+  }
+});
+
 let logoObjectUrl = null;
 
 newBusinessLogo.addEventListener("change", () => {
