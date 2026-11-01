@@ -33,6 +33,19 @@ if (business) {
 if (platformBusinessName) {
   platformBusinessName.textContent = business.business_name;
 }
+  const platformLogo = document.getElementById("platformLogo");
+
+if (platformLogo) {
+  const initials = business.business_name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map(word => word.charAt(0))
+    .join("")
+    .toUpperCase();
+
+  platformLogo.textContent = initials;
+}
   const joinTitle = document.getElementById("joinBusinessTitle");
   const joinDescription = document.getElementById("joinBusinessDescription");
 
