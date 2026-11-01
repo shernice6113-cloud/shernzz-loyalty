@@ -119,11 +119,8 @@ const logoCropImage = document.getElementById("logoCropImage");
 const logoZoom = document.getElementById("logoZoom");
 const confirmLogoCrop = document.getElementById("confirmLogoCrop");
 const cancelLogoCrop = document.getElementById("cancelLogoCrop");
-
-logoZoom.addEventListener("input", () => {
-  const zoom = Number(logoZoom.value);
-  logoCropImage.style.transform = `scale(${zoom})`;
-});
+let croppedLogoFile = null;
+logoZoom.addEventListener("input", updateLogoPosition);
 
 let logoDragX = 0;
 let logoDragY = 0;
@@ -166,9 +163,64 @@ function stopLogoDragging() {
 logoCropFrame.addEventListener("pointerup", stopLogoDragging);
 logoCropFrame.addEventListener("pointercancel", stopLogoDragging);
 
+confirmLogoCrop.addEventListener("click", () => {
+  if (!logoCropImage.complete || !logoCropImage.naturalWidth) {
+    alert("Please select a logo first.");
+    return;
+  }
+
+  const size = logoCropFrame.clientWidth;
+  const zoom = Number(logoZoom.value);
+
+  const imageWidth = logoCropImage.clientWidth;
+  const imageHeight = logoCropImage.clientHeight;
+
+  const left = parseFloat(logoCropImage.style.left) || 0;
+  const top = parseFloat(logoCropImage.style.top) || 0;
+
+  const finalLeft =
+    left + (imageWidth - imageWidth * zoom) / 2 + logoDragX;
+
+  const finalTop =
+    top + (imageHeight - imageHeight * zoom) / 2 + logoDragY;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 512;
+
+  const ctx = canvas.getContext("2d");
+
+  ctx.drawImage(
+    logoCropImage,
+    finalLeft * (512 / size),
+    finalTop * (512 / size),
+    imageWidth * zoom * (512 / size),
+    imageHeight * zoom * (512 / size)
+  );
+
+  canvas.toBlob((blob) => {
+    if (!blob) {
+      alert("Could not crop your logo. Please try again.");
+      return;
+    }
+
+    croppedLogoFile = new File(
+      [blob],
+      "business-logo.png",
+      { type: "image/png" }
+    );
+
+    logoCropper.classList.add("hidden");
+    alert("Your circular logo has been saved! 💗");
+  }, "image/png");
+});
+
 let logoObjectUrl = null;
 
 newBusinessLogo.addEventListener("change", () => {
+  croppedLogoFile = null;
+logoDragX = 0;
+logoDragY = 0;
   const file = newBusinessLogo.files?.[0];
 
   if (logoObjectUrl) {
@@ -1134,7 +1186,14 @@ if (saveBusinessButton) {
     const businessName = newBusinessName.value.trim();
     const reward5 = newReward5.value.trim();
     const reward10 = newReward10.value.trim();
-    const logoFile = newBusinessLogo?.files?.[0] || null;
+    
+const logoFile = croppedLogoFile || newBusinessLogo?.files?.[0] || null;
+
+if (newBusinessLogo?.files?.length && !croppedLogoFile) {
+  alert("Please adjust and save your logo before creating the business.");
+  return;
+}
+
 
 if (logoFile) {
   const allowedTypes = [
