@@ -1093,6 +1093,7 @@ if (removeHeartButton) {
 }
 }
 async function showAccountHome(user) {
+  rememberPage("accountHome");
   joinCard.classList.add("hidden");
   loyaltyCard.classList.add("hidden");
   staffDashboard.classList.add("hidden");
