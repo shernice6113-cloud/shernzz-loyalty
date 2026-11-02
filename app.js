@@ -133,6 +133,16 @@ supabaseClient.auth.onAuthStateChange((event) => {
 });
 const resetPasswordForm = document.getElementById("resetPasswordForm");
 const resetPasswordMessage = document.getElementById("resetPasswordMessage");
+const backToLoginButton = document.getElementById("backToLoginButton");
+
+backToLoginButton.addEventListener("click", async () => {
+  await supabaseClient.auth.signOut();
+
+  window.location.href =
+    window.location.origin +
+    window.location.pathname +
+    window.location.search;
+});
 
 resetPasswordForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -166,6 +176,8 @@ resetPasswordForm.addEventListener("submit", async (event) => {
 
   resetPasswordMessage.textContent =
     "Password updated successfully! 💖";
+  resetPasswordForm.classList.add("hidden");
+backToLoginButton.classList.remove("hidden");
 });
 forgotPasswordButton.addEventListener("click", async () => {
   const email = emailInput.value.trim();
