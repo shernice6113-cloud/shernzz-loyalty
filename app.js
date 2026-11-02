@@ -115,6 +115,36 @@ let authMode = "signup";
 const authSwitchButton = document.getElementById("authSwitchButton");
 const authSwitchText = document.getElementById("authSwitchText");
 const passwordInput = document.getElementById("password");
+const forgotPasswordButton = document.getElementById("forgotPasswordButton");
+forgotPasswordButton.addEventListener("click", async () => {
+  const email = emailInput.value.trim();
+
+  if (!email) {
+    showMessage("Please enter your email address first. 💕");
+    return;
+  }
+
+  showMessage("Sending your password reset email... 💌");
+
+  const redirectUrl =
+    window.location.origin +
+    window.location.pathname +
+    window.location.search;
+
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: redirectUrl
+  });
+
+  if (error) {
+    console.error("Password reset error:", error);
+    showMessage("Unable to send the reset email. Please try again later.");
+    return;
+  }
+
+  showMessage(
+    "If an account exists with this email, you'll receive a password reset link. 💌"
+  );
+});
 const showPassword = document.getElementById("showPassword");
 
 showPassword.addEventListener("change", () => {
@@ -124,6 +154,7 @@ authSwitchButton.addEventListener("click", () => {
   authMode = authMode === "signup" ? "login" : "signup";
 
   const isLogin = authMode === "login";
+  forgotPasswordButton.classList.toggle("hidden", !isLogin);
 
   firstNameInput.required = !isLogin;
   document.querySelector('label[for="firstName"]')?.classList.toggle("hidden", isLogin);
