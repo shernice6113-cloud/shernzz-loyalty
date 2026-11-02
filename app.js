@@ -1558,9 +1558,14 @@ async function startApp() {
     // Let Supabase finish processing any password recovery link
   await supabaseClient.auth.initialize();
 
-  if (isPasswordRecovery) {
-    return;
-  }
+ // Do not restore Account Home while a password reset is active
+if (
+  isPasswordRecovery ||
+  window.location.hash.includes("type=recovery") ||
+  window.location.search.includes("type=recovery")
+) {
+  return;
+}
 
   const {
     data: { session }
