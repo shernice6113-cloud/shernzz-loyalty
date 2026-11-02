@@ -152,6 +152,62 @@ async function loadAdminBusinesses() {
     businessList.appendChild(card);
   });
 }
+// Display subscription records in the Super Admin Dashboard
+async function loadAdminSubscriptions() {
+  const container = document.getElementById("adminSubscriptions");
+
+  container.textContent = "Loading subscriptions...";
+
+  const { data, error } = await supabaseClient
+    .from("business_subscriptions")
+    .select(`
+      business_id,
+      monthly_fee,
+      payment_status,
+      next_payment_due,
+      exemption_type,
+      access_status,
+      businesses (business_name)
+    `)
+    .order("business_id");
+
+  if (error) {
+    console.error("Subscription loading error:", error);
+    container.textContent = "Unable to load subscriptions.";
+    return;
+  }
+
+  container.replaceChildren();
+
+  if (!data || data.length === 0) {
+    container.textContent = "No subscription records yet.";
+    return;
+  }
+
+  data.forEach((subscription) => {
+    const card = document.createElement("div");
+    card.className = "account-section";
+
+    const name = document.createElement("h4");
+    name.textContent =
+      subscription.businesses?.business_name || "Unknown Business";
+
+    const details = document.createElement("p");
+
+    details.textContent =
+      `Monthly Fee: €${Number(subscription.monthly_fee).toFixed(2)}
+Payment: ${subscription.payment_status}
+Next Due: ${subscription.next_payment_due || "Not set"}
+Exemption: ${subscription.exemption_type}
+Access: ${subscription.access_status}`;
+
+    details.style.whiteSpace = "pre-line";
+
+    card.append(name, details);
+    container.appendChild(card);
+  });
+}
+
 const backFromAdminButton = document.getElementById("backFromAdminButton");
 
 // Open the Super Admin Dashboard
@@ -180,6 +236,7 @@ superAdminButton.addEventListener("click", async () => {
   accountHome.classList.add("hidden");
   superAdminPage.classList.remove("hidden");
   await loadAdminBusinesses();
+  await loadAdminSubscriptions();
 });
 
 // Return to Account Home
