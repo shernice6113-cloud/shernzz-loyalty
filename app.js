@@ -159,6 +159,17 @@ const passwordInput = document.getElementById("password");
 const forgotPasswordButton = document.getElementById("forgotPasswordButton");
 const resetPasswordScreen = document.getElementById("resetPasswordScreen");
 let isPasswordRecovery = false;
+// Detect a password recovery link before normal navigation begins
+const recoveryParams = new URLSearchParams(
+  window.location.hash.substring(1)
+);
+
+if (
+  recoveryParams.get("type") === "recovery" ||
+  new URLSearchParams(window.location.search).get("type") === "recovery"
+) {
+  isPasswordRecovery = true;
+}
 
 supabaseClient.auth.onAuthStateChange((event) => {
   if (event === "PASSWORD_RECOVERY") {
@@ -1412,6 +1423,9 @@ if (removeHeartButton) {
 }
 }
 async function showAccountHome(user) {
+  // Never open Account Home during password recovery
+  if (isPasswordRecovery) return;
+
   rememberPage("accountHome");
     const platformBusinessName = document.getElementById("platformBusinessName");
   const platformLogo = document.getElementById("platformLogo");
