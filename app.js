@@ -110,6 +110,29 @@ return business;
 }
 const joinCard = document.querySelector(".join-card");
 const joinForm = document.getElementById("joinForm");
+const superAdminButton = document.getElementById("superAdminButton");
+
+async function checkSuperAdminAccess(user) {
+  // Hide the button until permission is confirmed
+  superAdminButton.classList.add("hidden");
+
+  if (!user) return;
+
+  const { data, error } = await supabaseClient
+    .from("platform_admins")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Admin permission check failed:", error);
+    return;
+  }
+
+  if (data) {
+    superAdminButton.classList.remove("hidden");
+  }
+}
 const accountSignOutButton = document.getElementById("accountSignOutButton");
 
 accountSignOutButton.addEventListener("click", async () => {
@@ -1544,7 +1567,8 @@ async function startApp() {
   } = await supabaseClient.auth.getSession();
 
   if (!session?.user) return;
-
+// Check whether the signed-in user is a platform administrator
+await checkSuperAdminAccess(session.user);
   const savedPage = getRememberedPage();
 
   if (savedPage?.page === "createBusiness") {
