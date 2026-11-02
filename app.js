@@ -107,7 +107,11 @@ let authMode = "signup";
 const authSwitchButton = document.getElementById("authSwitchButton");
 const authSwitchText = document.getElementById("authSwitchText");
 const passwordInput = document.getElementById("password");
+const showPassword = document.getElementById("showPassword");
 
+showPassword.addEventListener("change", () => {
+  passwordInput.type = showPassword.checked ? "text" : "password";
+});
 authSwitchButton.addEventListener("click", () => {
   authMode = authMode === "signup" ? "login" : "signup";
 
