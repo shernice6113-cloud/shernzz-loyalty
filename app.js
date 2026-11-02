@@ -111,6 +111,48 @@ return business;
 const joinCard = document.querySelector(".join-card");
 const joinForm = document.getElementById("joinForm");
 const superAdminButton = document.getElementById("superAdminButton");
+const superAdminPage = document.getElementById("superAdminPage");
+const backFromAdminButton = document.getElementById("backFromAdminButton");
+
+// Open the Super Admin Dashboard
+superAdminButton.addEventListener("click", async () => {
+  const {
+    data: { user },
+    error: authError
+  } = await supabaseClient.auth.getUser();
+
+  if (authError || !user) {
+    alert("Please sign in again.");
+    return;
+  }
+
+  const { data: admin, error } = await supabaseClient
+    .from("platform_admins")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (error || !admin) {
+    alert("Access denied. Super Admins only. 🔐");
+    return;
+  }
+
+  accountHome.classList.add("hidden");
+  superAdminPage.classList.remove("hidden");
+});
+
+// Return to Account Home
+backFromAdminButton.addEventListener("click", async () => {
+  superAdminPage.classList.add("hidden");
+
+  const {
+    data: { user }
+  } = await supabaseClient.auth.getUser();
+
+  if (user) {
+    await showAccountHome(user);
+  }
+});
 
 async function checkSuperAdminAccess(user) {
   // Hide the button until permission is confirmed
