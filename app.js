@@ -116,6 +116,57 @@ const authSwitchButton = document.getElementById("authSwitchButton");
 const authSwitchText = document.getElementById("authSwitchText");
 const passwordInput = document.getElementById("password");
 const forgotPasswordButton = document.getElementById("forgotPasswordButton");
+const resetPasswordScreen = document.getElementById("resetPasswordScreen");
+let isPasswordRecovery = false;
+
+supabaseClient.auth.onAuthStateChange((event) => {
+  if (event === "PASSWORD_RECOVERY") {
+  isPasswordRecovery = true;
+
+  joinForm.classList.add("hidden");
+  resetPasswordScreen.classList.remove("hidden");
+
+  // Hide the regular login controls during recovery
+  forgotPasswordButton.classList.add("hidden");
+  authSwitchText.classList.add("hidden");
+}
+});
+const resetPasswordForm = document.getElementById("resetPasswordForm");
+const resetPasswordMessage = document.getElementById("resetPasswordMessage");
+
+resetPasswordForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const newPassword = document.getElementById("newPassword").value;
+  const confirmPassword = document.getElementById("confirmNewPassword").value;
+
+  if (newPassword !== confirmPassword) {
+    resetPasswordMessage.textContent = "Passwords do not match. 💕";
+    return;
+  }
+
+  if (newPassword.length < 8) {
+    resetPasswordMessage.textContent =
+      "Your password must be at least 8 characters.";
+    return;
+  }
+
+  resetPasswordMessage.textContent = "Updating your password... 🔐";
+
+  const { error } = await supabaseClient.auth.updateUser({
+    password: newPassword
+  });
+
+  if (error) {
+    console.error("Password update failed:", error);
+    resetPasswordMessage.textContent =
+      "Unable to update your password. Please request a new reset link.";
+    return;
+  }
+
+  resetPasswordMessage.textContent =
+    "Password updated successfully! 💖";
+});
 forgotPasswordButton.addEventListener("click", async () => {
   const email = emailInput.value.trim();
 
@@ -1451,6 +1502,12 @@ staffBusinessName.textContent =
 }
 async function startApp() {
   await loadBusinessFromUrl();
+    // Let Supabase finish processing any password recovery link
+  await supabaseClient.auth.initialize();
+
+  if (isPasswordRecovery) {
+    return;
+  }
 
   const {
     data: { session }
