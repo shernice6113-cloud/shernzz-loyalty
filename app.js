@@ -262,6 +262,7 @@ superAdminButton.addEventListener("click", async () => {
     return;
   }
 
+  rememberPage("superAdminPage");
   accountHome.classList.add("hidden");
   superAdminPage.classList.remove("hidden");
   await loadAdminBusinesses();
@@ -272,6 +273,7 @@ superAdminButton.addEventListener("click", async () => {
 // Return to Account Home
 backFromAdminButton.addEventListener("click", async () => {
   superAdminPage.classList.add("hidden");
+  rememberPage("accountHome");
 
   const {
     data: { user }
@@ -1759,6 +1761,31 @@ if (
 // Check whether the signed-in user is a platform administrator
 await checkSuperAdminAccess(session.user);
   const savedPage = getRememberedPage();
+  // Restore the Super Admin Dashboard after refreshing
+if (savedPage === "superAdminPage") {
+  const { data: admin, error } = await supabaseClient
+    .from("platform_admins")
+    .select("user_id")
+    .eq("user_id", session.user.id)
+    .maybeSingle();
+
+  if (!error && admin) {
+    joinCard.classList.add("hidden");
+    loyaltyCard.classList.add("hidden");
+    staffDashboard.classList.add("hidden");
+    accountHome.classList.add("hidden");
+
+    superAdminPage.classList.remove("hidden");
+
+    await loadAdminBusinesses();
+    await loadAdminSubscriptions();
+    await loadExemptionBusinesses();
+
+    return;
+  }
+
+  sessionStorage.removeItem("shernzz_current_page");
+}
 
   if (savedPage?.page === "createBusiness") {
     await showAccountHome(session.user);
