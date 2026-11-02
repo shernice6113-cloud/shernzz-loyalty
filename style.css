@@ -979,3 +979,51 @@ label[for="showPassword"] {
   outline: 2px solid #ff8dca;
   outline-offset: 3px;
 }
+/* SHERNZZ LOYALTY — Password recovery buttons */
+
+#forgotPasswordButton {
+  display: block;
+  width: fit-content;
+  min-width: 0;
+  margin: 4px 0 20px auto;
+  padding: 4px 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  color: #ff70b9;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+#backToLoginButton {
+  display: block;
+  width: fit-content;
+  min-width: 0;
+  margin: 22px auto 0;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  color: #ff70b9;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+#forgotPasswordButton:hover,
+#backToLoginButton:hover {
+  color: #ffaad5;
+}
+
+/* Keep hidden recovery buttons hidden */
+#forgotPasswordButton.hidden,
+#backToLoginButton.hidden {
+  display: none;
+}
