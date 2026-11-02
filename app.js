@@ -251,7 +251,9 @@ function validateExemptionSelection() {
       return "Please choose an expiration date.";
     }
 
-    const today = new Date().toLocaleDateString("en-CA");
+    const now = new Date();
+const today =
+  `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
     if (endDate <= today) {
       return "Please choose a future expiration date.";
@@ -267,16 +269,101 @@ const saveExemptionButton =
 const exemptionMessage =
   document.getElementById("exemptionMessage");
 
-saveExemptionButton.addEventListener("click", () => {
+saveExemptionButton.addEventListener("click", async () => {
   const validationError = validateExemptionSelection();
 
   if (validationError) {
     exemptionMessage.textContent = validationError;
     return;
   }
+  // Get the selected Free Access settings
+const businessId =
+  document.getElementById("exemptionBusinessSelect").value;
+
+const exemptionType =
+  document.getElementById("exemptionTypeSelect").value;
+
+const endDate =
+  document.getElementById("exemptionEndDate").value;
+
+exemptionMessage.textContent =
+  "⏳ Preparing subscription update...";
+  // Prepare the subscription changes
+const subscriptionUpdate = {
+  exemption_type: exemptionType,
+  exemption_end_date: null,
+  access_status: "active"
+};
+
+if (exemptionType === "permanent") {
+  subscriptionUpdate.payment_status = "exempt";
+  subscriptionUpdate.next_payment_due = null;
+}
+
+if (exemptionType === "temporary") {
+  subscriptionUpdate.payment_status = "exempt";
+  subscriptionUpdate.exemption_end_date = endDate;
+}
+
+if (exemptionType === "none") {
+  subscriptionUpdate.payment_status = "pending";
+  // Keep the existing payment due date unchanged.
+}
+  // Verify Super Admin permission before saving
+const { data: { user }, error: authError } =
+  await supabaseClient.auth.getUser();
+
+if (authError || !user) {
+  exemptionMessage.textContent =
+    "Please sign in again. 🔐";
+  return;
+}
+
+const { data: admin, error: adminError } =
+  await supabaseClient
+    .from("platform_admins")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+if (adminError || !admin) {
+  exemptionMessage.textContent =
+    "Access denied. Super Admins only. 🔐";
+  return;
+}
+  // Save the subscription changes to Supabase
+saveExemptionButton.disabled = true;
+exemptionMessage.textContent = "⏳ Saving changes...";
+
+try {
+  const { data, error: saveError } = await supabaseClient
+    .from("business_subscriptions")
+    .update(subscriptionUpdate)
+    .eq("business_id", businessId)
+    .select("business_id");
+
+  if (saveError) {
+    throw saveError;
+  }
+
+  if (!data || data.length !== 1) {
+    throw new Error("Subscription record not found.");
+  }
 
   exemptionMessage.textContent =
-    "✅ Selection validated! Ready to save.";
+    "✅ Free Access settings saved successfully! 💗";
+
+  await loadAdminSubscriptions();
+
+} catch (error) {
+  console.error("Free Access save failed:", error);
+
+  exemptionMessage.textContent =
+    "❌ Unable to save changes. Please try again.";
+
+} finally {
+  saveExemptionButton.disabled = false;
+}
 });
 
 const backFromAdminButton = document.getElementById("backFromAdminButton");
