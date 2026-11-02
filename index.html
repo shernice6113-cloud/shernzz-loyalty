@@ -81,6 +81,39 @@
   </button>
 </p>
       </form>
+   <!-- Reset Password Screen -->
+<div id="resetPasswordScreen" class="hidden">
+  <h2>Create a new password 🔐</h2>
+  <p>Choose a new password for your Shernzz Loyalty account.</p>
+
+  <form id="resetPasswordForm">
+    <label for="newPassword">New password</label>
+    <input
+      type="password"
+      id="newPassword"
+      placeholder="Enter your new password"
+      minlength="8"
+      autocomplete="new-password"
+      required
+    >
+
+    <label for="confirmNewPassword">Confirm new password</label>
+    <input
+      type="password"
+      id="confirmNewPassword"
+      placeholder="Confirm your new password"
+      minlength="8"
+      autocomplete="new-password"
+      required
+    >
+
+    <button type="submit" class="primary-button">
+      Update Password
+    </button>
+  </form>
+
+  <p id="resetPasswordMessage"></p>
+</div>   
 
       <p id="message"></p>
 
