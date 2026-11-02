@@ -153,6 +153,45 @@
     <h3>🎁 Free Access & Exemptions</h3>
     <p>Manage permanent and temporary subscription exemptions.</p>
     <div id="adminExemptions"></div>
+    <div id="adminExemptionControls">
+
+  <h4>👑 Manage Free Access</h4>
+
+  <label for="exemptionBusinessSelect">
+    Select Business
+  </label>
+  <select id="exemptionBusinessSelect">
+    <option value="">Choose a business</option>
+  </select>
+
+  <label for="exemptionTypeSelect">
+    Free Access Type
+  </label>
+  <select id="exemptionTypeSelect">
+    <option value="permanent">Permanent Free Access</option>
+    <option value="temporary">Temporary Free Access</option>
+    <option value="none">Remove Free Access</option>
+  </select>
+
+  <label for="exemptionEndDate">
+    Expiration Date (temporary access only)
+  </label>
+  <input
+    type="date"
+    id="exemptionEndDate"
+  >
+
+  <button
+    type="button"
+    id="saveExemptionButton"
+    class="staff-button"
+  >
+    💾 Save Free Access
+  </button>
+
+  <p id="exemptionMessage"></p>
+
+</div>
   </div>
 
   <button
