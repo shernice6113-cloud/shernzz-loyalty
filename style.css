@@ -900,3 +900,34 @@ button {
   width: 100%;
   accent-color: #ff78b7;
 }
+/* Pretty login and signup switch */
+
+#authSwitchText {
+  margin-top: 22px;
+  text-align: center;
+  color: #d6cbd3;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+#authSwitchButton {
+  display: inline;
+  width: auto;
+  min-width: 0;
+  margin: 0 0 0 5px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  color: #ff55ad;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+#authSwitchButton:hover {
+  color: #ff8dca;
+}
