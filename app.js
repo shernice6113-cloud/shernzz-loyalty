@@ -1257,6 +1257,53 @@ async function showAccountHome(user) {
       businessButton.addEventListener("click", async () => {
         rememberPage("staffDashboard", membership.business_id);
         editingLogoBusinessId = membership.business_id;
+        const { data: dashboardBusiness, error: dashboardBusinessError } =
+  await supabaseClient
+    .from("public_business_profiles")
+    .select("business_name, logo_url")
+    .eq("id", membership.business_id)
+    .maybeSingle();
+
+if (dashboardBusinessError) {
+  console.error("Could not load dashboard branding:", dashboardBusinessError);
+}
+
+if (dashboardBusiness) {
+  const platformBusinessName = document.getElementById("platformBusinessName");
+  const platformLogo = document.getElementById("platformLogo");
+
+  if (platformBusinessName) {
+    platformBusinessName.textContent = dashboardBusiness.business_name;
+  }
+
+  if (platformLogo) {
+    const initials = dashboardBusiness.business_name
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map(word => word.charAt(0))
+      .join("")
+      .toUpperCase();
+
+    platformLogo.textContent = initials;
+
+    if (dashboardBusiness.logo_url) {
+      const logoImg = document.createElement("img");
+      logoImg.src = dashboardBusiness.logo_url;
+      logoImg.alt = `${dashboardBusiness.business_name} logo`;
+      logoImg.style.width = "100%";
+      logoImg.style.height = "100%";
+      logoImg.style.objectFit = "cover";
+
+      logoImg.onerror = () => {
+        platformLogo.textContent = initials;
+      };
+
+      platformLogo.textContent = "";
+      platformLogo.appendChild(logoImg);
+    }
+  }
+}
         accountHome.classList.add("hidden");
         staffDashboard.classList.remove("hidden");
         ownerLogoSettings.classList.toggle(
