@@ -591,7 +591,7 @@ async function showCustomerCard(user, businessId = null) {
  const { data: loyaltyBusiness, error: loyaltyBusinessError } =
   await supabaseClient
     .from("businesses")
-    .select("business_name, reward_5, reward_10")
+   .select("business_name, reward_5, reward_10, logo_url")
     .eq("id", targetBusinessId)
     .single();
 
@@ -645,6 +645,42 @@ const { data: customer, error } = await supabaseClient
 
     loyaltyCustomer = data;
   }
+  if (loyaltyBusiness) {
+  const platformBusinessName = document.getElementById("platformBusinessName");
+  const platformLogo = document.getElementById("platformLogo");
+
+  if (platformBusinessName) {
+    platformBusinessName.textContent = loyaltyBusiness.business_name;
+  }
+
+  if (platformLogo) {
+    const initials = loyaltyBusiness.business_name
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map(word => word.charAt(0))
+      .join("")
+      .toUpperCase();
+
+    platformLogo.textContent = initials;
+
+    if (loyaltyBusiness.logo_url) {
+      const logoImg = document.createElement("img");
+      logoImg.src = loyaltyBusiness.logo_url;
+      logoImg.alt = `${loyaltyBusiness.business_name} logo`;
+      logoImg.style.width = "100%";
+      logoImg.style.height = "100%";
+      logoImg.style.objectFit = "cover";
+
+      logoImg.onerror = () => {
+        platformLogo.textContent = initials;
+      };
+
+      platformLogo.textContent = "";
+      platformLogo.appendChild(logoImg);
+    }
+  }
+}
 const customerBusinessTitle = document.getElementById("customerBusinessTitle");
 if (customerBusinessTitle) customerBusinessTitle.textContent = loyaltyBusiness?.business_name || "SHERNZZ LOYALTY";
   welcomeName.textContent =
@@ -1178,6 +1214,16 @@ if (removeHeartButton) {
 }
 async function showAccountHome(user) {
   rememberPage("accountHome");
+    const platformBusinessName = document.getElementById("platformBusinessName");
+  const platformLogo = document.getElementById("platformLogo");
+
+  if (platformBusinessName) {
+    platformBusinessName.textContent = "SHERNZZ CREATIONS & CO";
+  }
+
+  if (platformLogo) {
+    platformLogo.textContent = "SC";
+  }
   joinCard.classList.add("hidden");
   loyaltyCard.classList.add("hidden");
   staffDashboard.classList.add("hidden");
