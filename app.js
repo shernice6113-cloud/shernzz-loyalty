@@ -207,6 +207,35 @@ Access: ${subscription.access_status}`;
     container.appendChild(card);
   });
 }
+// Load businesses into the Free Access dropdown
+async function loadExemptionBusinesses() {
+  const select = document.getElementById("exemptionBusinessSelect");
+
+  select.replaceChildren();
+
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Choose a business";
+  select.appendChild(placeholder);
+
+  const { data, error } = await supabaseClient
+    .from("businesses")
+    .select("id, business_name")
+    .order("business_name");
+
+  if (error) {
+    console.error("Unable to load exemption businesses:", error);
+    placeholder.textContent = "Unable to load businesses";
+    return;
+  }
+
+  (data || []).forEach((business) => {
+    const option = document.createElement("option");
+    option.value = business.id;
+    option.textContent = business.business_name;
+    select.appendChild(option);
+  });
+}
 
 const backFromAdminButton = document.getElementById("backFromAdminButton");
 
@@ -237,6 +266,7 @@ superAdminButton.addEventListener("click", async () => {
   superAdminPage.classList.remove("hidden");
   await loadAdminBusinesses();
   await loadAdminSubscriptions();
+  await loadExemptionBusinesses();
 });
 
 // Return to Account Home
