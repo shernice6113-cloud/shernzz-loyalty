@@ -1058,3 +1058,7 @@ label[for="showPassword"] {
 .account-signout-button:active {
   transform: scale(0.97);
 }
+/* Hide the old standalone Staff dashboard button */
+#staffButton {
+  display: none !important;
+}
