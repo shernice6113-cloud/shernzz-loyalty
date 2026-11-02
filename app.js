@@ -110,6 +110,24 @@ return business;
 }
 const joinCard = document.querySelector(".join-card");
 const joinForm = document.getElementById("joinForm");
+const accountSignOutButton = document.getElementById("accountSignOutButton");
+
+accountSignOutButton.addEventListener("click", async () => {
+  const { error } = await supabaseClient.auth.signOut();
+
+  if (error) {
+    console.error("Sign out failed:", error);
+    alert("Unable to sign out. Please try again.");
+    return;
+  }
+
+  sessionStorage.removeItem("shernzz_current_page");
+
+  window.location.href =
+    window.location.origin +
+    window.location.pathname +
+    window.location.search;
+});
 let authMode = "signup";
 
 const authSwitchButton = document.getElementById("authSwitchButton");
