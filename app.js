@@ -102,6 +102,34 @@ return business;
 }
 const joinCard = document.querySelector(".join-card");
 const joinForm = document.getElementById("joinForm");
+let authMode = "signup";
+
+const authSwitchButton = document.getElementById("authSwitchButton");
+const authSwitchText = document.getElementById("authSwitchText");
+const passwordInput = document.getElementById("password");
+
+authSwitchButton.addEventListener("click", () => {
+  authMode = authMode === "signup" ? "login" : "signup";
+
+  const isLogin = authMode === "login";
+
+  firstNameInput.required = !isLogin;
+  document.querySelector('label[for="firstName"]')?.classList.toggle("hidden", isLogin);
+  firstNameInput.classList.toggle("hidden", isLogin);
+
+  passwordInput.autocomplete = isLogin
+    ? "current-password"
+    : "new-password";
+
+  joinForm.querySelector('button[type="submit"]').textContent =
+    isLogin ? "Log In" : "Create my loyalty card";
+
+  authSwitchText.firstChild.textContent = isLogin
+    ? "Don't have an account? "
+    : "Already have an account? ";
+
+  authSwitchButton.textContent = isLogin ? "Sign Up" : "Log In";
+});
 const firstNameInput = document.getElementById("firstName");
 const emailInput = document.getElementById("email");
 const message = document.getElementById("message");
@@ -704,48 +732,72 @@ renderCustomerRewards(
   localStorage.removeItem("shernzz_first_name");
 }
 
+
 joinForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const firstName = firstNameInput.value.trim();
   const email = emailInput.value.trim();
+  const password = passwordInput.value;
+  const isLogin = authMode === "login";
 
-  if (!firstName || !email) {
+  if (!email || !password || (!isLogin && !firstName)) {
+    showMessage("Please complete all required fields.");
     return;
   }
 
-  showMessage("Sending your secure sign-in email... 💕");
+  if (password.length < 8) {
+    showMessage("Your password must be at least 8 characters.");
+    return;
+  }
 
-  localStorage.setItem(
-    "shernzz_first_name",
-    firstName
-  );
+  showMessage(isLogin ? "Signing you in..." : "Creating your account...");
 
- const redirectUrl =
-  window.location.origin + window.location.pathname + window.location.search;
-  const { error } =
-    await supabaseClient.auth.signInWithOtp({
-      email: email,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          first_name: firstName
-        }
-      }
+  if (isLogin) {
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password
     });
 
+    if (error) {
+      console.error("Login failed:", error);
+      showMessage("Incorrect email or password, or your email is not verified.");
+      return;
+    }
+
+    window.location.reload();
+    return;
+  }
+
+  localStorage.setItem("shernzz_first_name", firstName);
+
+  const redirectUrl =
+    window.location.origin +
+    window.location.pathname +
+    window.location.search;
+
+  const { error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: redirectUrl,
+      data: {
+        first_name: firstName
+      }
+    }
+  });
+
   if (error) {
-    console.error(error);
-    showMessage(
-      "Something went wrong. Please try again."
-    );
+    console.error("Signup failed:", error);
+    showMessage(error.message);
     return;
   }
 
   showMessage(
-    "Check your email 💌 Tap the secure link to open your loyalty card."
+    "Account created! 💌 Check your email to verify your account, then log in."
   );
 });
+
 
 
 const customerSearch = document.getElementById("customerSearch");
