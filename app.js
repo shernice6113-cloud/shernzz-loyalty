@@ -1762,7 +1762,7 @@ if (
 await checkSuperAdminAccess(session.user);
   const savedPage = getRememberedPage();
   // Restore the Super Admin Dashboard after refreshing
-if (savedPage === "superAdminPage") {
+if (savedPage?.page === "superAdminPage") {
   const { data: admin, error } = await supabaseClient
     .from("platform_admins")
     .select("user_id")
