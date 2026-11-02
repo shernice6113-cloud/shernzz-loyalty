@@ -1027,3 +1027,34 @@ label[for="showPassword"] {
 #backToLoginButton.hidden {
   display: none;
 }
+/* Account Home Sign Out Button */
+
+#accountHome {
+  position: relative;
+}
+
+.account-signout-button {
+  display: block;
+  width: fit-content;
+  min-width: 0;
+  margin: 12px 0 18px auto;
+  padding: 9px 15px;
+  background: rgba(255, 85, 173, 0.08);
+  border: 1px solid rgba(255, 85, 173, 0.45);
+  border-radius: 12px;
+  box-shadow: none;
+  color: #ff70b9;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.account-signout-button:hover {
+  background: rgba(255, 85, 173, 0.18);
+  border-color: #ff70b9;
+}
+
+.account-signout-button:active {
+  transform: scale(0.97);
+}
