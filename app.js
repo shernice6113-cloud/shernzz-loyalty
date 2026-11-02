@@ -112,6 +112,46 @@ const joinCard = document.querySelector(".join-card");
 const joinForm = document.getElementById("joinForm");
 const superAdminButton = document.getElementById("superAdminButton");
 const superAdminPage = document.getElementById("superAdminPage");
+// Load registered businesses for the Super Admin
+async function loadAdminBusinesses() {
+  const businessList = document.getElementById("adminBusinessList");
+
+  businessList.textContent = "Loading businesses...";
+
+  const { data, error } = await supabaseClient
+    .from("businesses")
+    .select("id, business_name, is_active, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Unable to load businesses:", error);
+    businessList.textContent = "Unable to load businesses.";
+    return;
+  }
+
+  businessList.replaceChildren();
+
+  if (!data || data.length === 0) {
+    businessList.textContent = "No registered businesses yet.";
+    return;
+  }
+
+  data.forEach((business) => {
+    const card = document.createElement("div");
+    card.className = "account-section";
+
+    const name = document.createElement("h4");
+    name.textContent = business.business_name;
+
+    const status = document.createElement("p");
+    status.textContent = business.is_active
+      ? "🟢 Active"
+      : "🔴 Inactive";
+
+    card.append(name, status);
+    businessList.appendChild(card);
+  });
+}
 const backFromAdminButton = document.getElementById("backFromAdminButton");
 
 // Open the Super Admin Dashboard
@@ -139,6 +179,7 @@ superAdminButton.addEventListener("click", async () => {
 
   accountHome.classList.add("hidden");
   superAdminPage.classList.remove("hidden");
+  await loadAdminBusinesses();
 });
 
 // Return to Account Home
