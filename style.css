@@ -1062,3 +1062,34 @@ label[for="showPassword"] {
 #staffButton {
   display: none !important;
 }
+/* SHERNZZ LOYALTY — Super Admin Button */
+
+#superAdminButton {
+  display: block;
+  width: fit-content;
+  min-width: 0;
+  margin: 12px 0 22px;
+  padding: 11px 18px;
+
+  background: linear-gradient(135deg, #ff79c6, #ee3298);
+  border: 1px solid #ff8dce;
+  border-radius: 12px;
+
+  color: #1d0b17;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 4px 18px rgba(255, 65, 160, 0.2);
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#superAdminButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(255, 65, 160, 0.35);
+}
+
+/* Keep button hidden until admin status is verified */
+#superAdminButton.hidden {
+  display: none !important;
+}
