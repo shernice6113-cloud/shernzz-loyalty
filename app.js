@@ -236,6 +236,48 @@ async function loadExemptionBusinesses() {
     select.appendChild(option);
   });
 }
+// Validate Super Admin free access selections
+function validateExemptionSelection() {
+  const businessId = document.getElementById("exemptionBusinessSelect").value;
+  const exemptionType = document.getElementById("exemptionTypeSelect").value;
+  const endDate = document.getElementById("exemptionEndDate").value;
+
+  if (!businessId) {
+    return "Please select a business first. 💗";
+  }
+
+  if (exemptionType === "temporary") {
+    if (!endDate) {
+      return "Please choose an expiration date.";
+    }
+
+    const today = new Date().toLocaleDateString("en-CA");
+
+    if (endDate <= today) {
+      return "Please choose a future expiration date.";
+    }
+  }
+
+  return null;
+}
+// Handle Free Access form validation
+const saveExemptionButton =
+  document.getElementById("saveExemptionButton");
+
+const exemptionMessage =
+  document.getElementById("exemptionMessage");
+
+saveExemptionButton.addEventListener("click", () => {
+  const validationError = validateExemptionSelection();
+
+  if (validationError) {
+    exemptionMessage.textContent = validationError;
+    return;
+  }
+
+  exemptionMessage.textContent =
+    "✅ Selection validated! Ready to save.";
+});
 
 const backFromAdminButton = document.getElementById("backFromAdminButton");
 
