@@ -931,3 +931,51 @@ button {
 #authSwitchButton:hover {
   color: #ff8dca;
 }
+/* Cute, compact Show Password checkbox */
+
+label[for="showPassword"] {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: fit-content;
+  margin: 12px 0 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #d6cbd3;
+  cursor: pointer;
+}
+
+#showPassword {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  margin: 0;
+  padding: 0;
+  border: 1.5px solid #ff55ad;
+  border-radius: 5px;
+  background: #211720;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+#showPassword:checked {
+  background: #ff55ad;
+  border-color: #ff55ad;
+}
+
+#showPassword:checked::after {
+  content: "✓";
+  display: block;
+  color: #160d15;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 14px;
+  text-align: center;
+}
+
+#showPassword:focus-visible {
+  outline: 2px solid #ff8dca;
+  outline-offset: 3px;
+}
