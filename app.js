@@ -65,6 +65,11 @@ function getRememberedPage() {
     return null;
   }
 }
+
+function clearRememberedPage() {
+  sessionStorage.removeItem(PAGE_MEMORY_KEY);
+}
+
 async function loadBusinessFromUrl() {
   if (!businessSlug) {
     return null;
@@ -1326,6 +1331,19 @@ staffButton.addEventListener("click", async () => {
     showMessage("You don't have staff access to this dashboard.");
     return;
   }
+  
+  const subscriptionAccess =
+    await checkBusinessSubscriptionAccess(membership.business_id);
+
+  if (!subscriptionAccess.allowed) {
+    showMessage(
+      subscriptionAccess.reason === "suspended"
+        ? "🔒 This business subscription is suspended. Please contact the business owner."
+        : "⚠️ Unable to verify business subscription access. Please try again."
+    );
+    return;
+  }
+
 
 ownerLogoSettings.classList.toggle(
   "hidden",
@@ -1796,6 +1814,19 @@ async function showAccountHome(user) {
       businessButton.className = "staff-button";
      businessButton.textContent = `${membership.businesses?.business_name || "Your Business"} 💼`;
       businessButton.addEventListener("click", async () => {
+        
+        const subscriptionAccess =
+          await checkBusinessSubscriptionAccess(membership.business_id);
+
+        if (!subscriptionAccess.allowed) {
+          alert(
+            subscriptionAccess.reason === "suspended"
+              ? "🔒 This business subscription is suspended. Please contact the business owner."
+              : "⚠️ Unable to verify business subscription access. Please try again."
+          );
+          return;
+        }
+
         rememberPage("staffDashboard", membership.business_id);
         editingLogoBusinessId = membership.business_id;
         const { data: dashboardBusiness, error: dashboardBusinessError } =
@@ -1961,6 +1992,24 @@ if (savedPage?.page === "superAdminPage") {
       .maybeSingle();
 
     if (!error && membership) {
+      
+      const subscriptionAccess =
+        await checkBusinessSubscriptionAccess(membership.business_id);
+
+      if (!subscriptionAccess.allowed) {
+        
+        clearRememberedPage();
+
+        await showAccountHome(session.user);
+
+        alert(
+          subscriptionAccess.reason === "suspended"
+            ? "🔒 This business subscription is suspended. Please contact the business owner."
+            : "⚠️ Unable to verify business subscription access. Please try again."
+        );
+        return;
+      }
+
       editingLogoBusinessId = membership.business_id;
       await showAccountHome(session.user);
 const { data: dashboardBusiness } = await supabaseClient
