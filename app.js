@@ -295,6 +295,16 @@ const today =
   return null;
 }
 // Handle Free Access form validation
+
+const billingDateInput =
+  document.getElementById("billingDateInput");
+
+const saveBillingDateButton =
+  document.getElementById("saveBillingDateButton");
+
+const billingDateMessage =
+  document.getElementById("billingDateMessage");
+
 const saveExemptionButton =
   document.getElementById("saveExemptionButton");
 
@@ -397,6 +407,72 @@ try {
   saveExemptionButton.disabled = false;
 }
 });
+
+if (saveBillingDateButton) {
+  saveBillingDateButton.addEventListener("click", async () => {
+    const businessId = document.getElementById("exemptionBusinessSelect")?.value;
+    const newDueDate = billingDateInput?.value;
+
+    if (!businessId || !newDueDate) {
+      alert("Please select a business and billing date.");
+      return;
+    }
+
+    const { data: { user }, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError || !user) {
+      alert("Please sign in again.");
+      return;
+    }
+
+    const { data: admin, error: adminError } =
+      await supabaseClient
+        .from("platform_admins")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+    if (adminError || !admin) {
+      alert("Access denied. Super Admins only.");
+      return;
+    }
+
+    const confirmed = confirm(
+      `Change this business's next payment due date to ${newDueDate}?`
+    );
+
+    if (!confirmed) return;
+
+    saveBillingDateButton.disabled = true;
+
+    try {
+      const { data, error } = await supabaseClient
+        .from("business_subscriptions")
+        .update({ next_payment_due: newDueDate })
+        .eq("business_id", businessId)
+        .eq("exemption_type", "none")
+        .select("business_id");
+
+      if (error) throw error;
+
+      if (!data?.length) {
+        throw new Error("No eligible subscription was updated.");
+      }
+
+      billingDateMessage.textContent =
+        "✅ Billing date updated successfully!";
+
+      await loadAdminSubscriptions();
+    } catch (error) {
+      console.error("Billing date update failed:", error);
+      billingDateMessage.textContent =
+        "❌ Unable to update billing date.";
+    } finally {
+      saveBillingDateButton.disabled = false;
+    }
+  });
+}
 
 
 const confirmPaymentButton =
