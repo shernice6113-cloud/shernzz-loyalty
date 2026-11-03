@@ -398,6 +398,76 @@ try {
 }
 });
 
+
+const confirmPaymentButton =
+  document.getElementById("confirmPaymentButton");
+
+if (confirmPaymentButton) {
+  confirmPaymentButton.addEventListener("click", async () => {
+    const businessId =
+      document.getElementById("adminBusinessSelect")?.value;
+
+    if (!businessId) {
+      alert("Please select a business first.");
+      return;
+    }
+
+    const confirmed = confirm(
+      "Confirm that payment has been received for this business?"
+    );
+
+    if (!confirmed) return;
+
+    const { data: { user }, error: authError } =
+      await supabaseClient.auth.getUser();
+
+    if (authError || !user) {
+      alert("Please sign in again.");
+      return;
+    }
+
+    const { data: admin, error: adminError } =
+      await supabaseClient
+        .from("platform_admins")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+    if (adminError || !admin) {
+      alert("Access denied. Super Admins only.");
+      return;
+    }
+
+    confirmPaymentButton.disabled = true;
+
+    try {
+      const { data, error } = await supabaseClient
+        .from("business_subscriptions")
+        .update({
+          payment_status: "paid",
+          access_status: "active"
+        })
+        .eq("business_id", businessId)
+        .eq("exemption_type", "none")
+        .select("business_id");
+
+      if (error) throw error;
+
+      if (!data?.length) {
+        throw new Error("No eligible subscription was updated.");
+      }
+
+      alert("Payment confirmed! Business access restored.");
+      await loadAdminSubscriptions();
+    } catch (error) {
+      console.error("Payment confirmation failed:", error);
+      alert("Unable to confirm payment. Please try again.");
+    } finally {
+      confirmPaymentButton.disabled = false;
+    }
+  });
+}
+
 const backFromAdminButton = document.getElementById("backFromAdminButton");
 
 // Open the Super Admin Dashboard
