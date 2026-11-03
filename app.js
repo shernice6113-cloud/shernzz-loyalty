@@ -19,6 +19,33 @@ let selectedBusiness = null;
 let activeLoyaltyBusinessId = null;
 const PAGE_MEMORY_KEY = "shernzz_current_page";
 
+async function checkBusinessSubscriptionAccess(businessId) {
+  if (!businessId) {
+    return { allowed: false, reason: "missing_business" };
+  }
+
+  const { data, error } = await supabaseClient
+    .from("business_subscriptions")
+    .select("access_status")
+    .eq("business_id", businessId)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Subscription access check failed:", error);
+    return { allowed: false, reason: "check_failed" };
+  }
+
+  if (!data) {
+    return { allowed: false, reason: "subscription_missing" };
+  }
+
+  return {
+    allowed: data.access_status === "active",
+    reason: data.access_status
+  };
+}
+
+
 function rememberPage(page, businessId = null) {
   sessionStorage.setItem(
     PAGE_MEMORY_KEY,
