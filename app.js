@@ -323,18 +323,18 @@ exemptionMessage.textContent =
   // Prepare the subscription changes
 const subscriptionUpdate = {
   exemption_type: exemptionType,
-  exemption_end_date: null,
-  access_status: "active"
+  exemption_end_date: null
 };
-
 if (exemptionType === "permanent") {
   subscriptionUpdate.payment_status = "exempt";
   subscriptionUpdate.next_payment_due = null;
+  subscriptionUpdate.access_status = "active";
 }
 
 if (exemptionType === "temporary") {
   subscriptionUpdate.payment_status = "exempt";
   subscriptionUpdate.exemption_end_date = endDate;
+  subscriptionUpdate.access_status = "active";
 }
 
 if (exemptionType === "none") {
