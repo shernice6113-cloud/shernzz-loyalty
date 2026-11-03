@@ -405,7 +405,7 @@ const confirmPaymentButton =
 if (confirmPaymentButton) {
   confirmPaymentButton.addEventListener("click", async () => {
     const businessId =
-      document.getElementById("adminBusinessSelect")?.value;
+      document.getElementById("exemptionBusinessSelect")?.value;
 
     if (!businessId) {
       alert("Please select a business first.");
