@@ -526,6 +526,16 @@ if (confirmPaymentButton) {
     .single();
 
 if (lookupError) throw lookupError;
+      if (
+  subscription.payment_status === "paid" &&
+  subscription.next_payment_due &&
+  subscription.next_payment_due >=
+    new Date().toISOString().split("T")[0]
+) {
+  alert("This business already has a paid subscription. Verify a new payment before extending it.");
+ confirmPaymentButton.disabled = false;
+return;
+}
 
     const paymentDate = new Date();
 
@@ -539,9 +549,10 @@ const nextPaymentDue =
       const { data, error } = await supabaseClient
         .from("business_subscriptions")
         .update({
-  payment_status: "paid",
-  access_status: "active",
-  next_payment_due: nextPaymentDue
+ payment_status: "paid",
+access_status: "active",
+subscription_start_date: paymentDate.toISOString().split("T")[0],
+next_payment_due: nextPaymentDue
 })
         .eq("business_id", businessId)
         .eq("exemption_type", "none")
