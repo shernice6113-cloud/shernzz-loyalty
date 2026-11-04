@@ -517,12 +517,32 @@ if (confirmPaymentButton) {
     confirmPaymentButton.disabled = true;
 
     try {
+      const { data: subscription, error: lookupError } =
+  await supabaseClient
+    .from("business_subscriptions")
+    .select("next_payment_due, subscription_start_date, payment_status")
+    .eq("business_id", businessId)
+    .eq("exemption_type", "none")
+    .single();
+
+if (lookupError) throw lookupError;
+
+    const paymentDate = new Date();
+
+const nextPaymentDate = new Date(paymentDate);
+nextPaymentDate.setUTCDate(
+  nextPaymentDate.getUTCDate() + 30
+);
+
+const nextPaymentDue =
+  nextPaymentDate.toISOString().split("T")[0];
       const { data, error } = await supabaseClient
         .from("business_subscriptions")
         .update({
-          payment_status: "paid",
-          access_status: "active"
-        })
+  payment_status: "paid",
+  access_status: "active",
+  next_payment_due: nextPaymentDue
+})
         .eq("business_id", businessId)
         .eq("exemption_type", "none")
         .select("business_id");
