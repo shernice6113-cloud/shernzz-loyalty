@@ -2482,7 +2482,7 @@ if (logoFile) {
     return;
   }
 }
-showMessage("Your loyalty program was created! 💕");
+showMessage("🎉 Your business is ready! Your 7-day free trial has started. Enjoy up to 25 customers, no payment required! 💕");
 
 createBusinessPage.classList.add("hidden");
 accountHome.classList.remove("hidden");
