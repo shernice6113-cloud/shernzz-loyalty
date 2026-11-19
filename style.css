@@ -1702,3 +1702,50 @@ label[for="showPassword"] {
     padding: 20px 14px;
   }
 }
+
+/* SHERNZZ LOYALTY — COMPACT ADMIN CARDS */
+
+/* Reduce spacing between business cards */
+#superAdminPage #adminBusinessList,
+#superAdminPage #adminSubscriptions {
+  gap: 10px;
+}
+
+/* Make individual cards more compact */
+#superAdminPage #adminBusinessList > *,
+#superAdminPage #adminSubscriptions > * {
+  padding: 14px 16px;
+  margin: 0;
+  min-height: 0;
+  line-height: 1.45;
+}
+
+/* Reduce spacing inside cards */
+#superAdminPage #adminBusinessList > * > *,
+#superAdminPage #adminSubscriptions > * > * {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+/* Reduce spacing around main sections */
+#superAdminPage .account-section {
+  margin: 16px 0;
+  padding: 20px 16px;
+}
+
+/* Make section descriptions more compact */
+#superAdminPage .account-section > p {
+  margin-bottom: 14px;
+}
+
+/* Smaller spacing on mobile */
+@media (max-width: 600px) {
+  #superAdminPage #adminBusinessList > *,
+  #superAdminPage #adminSubscriptions > * {
+    padding: 12px 14px;
+  }
+
+  #superAdminPage .account-section {
+    padding: 18px 12px;
+  }
+}
