@@ -1749,3 +1749,49 @@ label[for="showPassword"] {
     padding: 18px 12px;
   }
 }
+
+/* SHERNZZ LOYALTY — LUXURY PLATFORM BRANDING */
+
+/* Gold SC logo */
+#platformLogo {
+  color: #d4af37;
+  text-shadow: 0 2px 18px rgba(212, 175, 55, 0.22);
+}
+
+/* Gold business name underneath */
+#platformBusinessName {
+  color: #e8d6a6;
+  letter-spacing: 4px;
+}
+
+/* Elegant platform headings */
+#accountHome > .eyebrow,
+#createBusinessPage > .eyebrow,
+#superAdminPage > .eyebrow {
+  color: #d4af37;
+}
+
+/* Gold business registration headings */
+#createBusinessPage h2 {
+  color: #ffffff;
+}
+
+/* Gold business registration buttons */
+#createBusinessPage .staff-button {
+  background: linear-gradient(135deg, #b88a2b, #f1d47a);
+  color: #111111;
+  border: 1px solid #d4af37;
+}
+
+/* Gold business registration inputs */
+#createBusinessPage input:not([type="file"]) {
+  background: #171717;
+  color: #ffffff;
+  border: 1px solid #66552e;
+}
+
+#createBusinessPage input:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+}
