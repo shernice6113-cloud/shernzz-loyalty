@@ -26,7 +26,7 @@ async function checkBusinessSubscriptionAccess(businessId) {
 
   const { data, error } = await supabaseClient
     .from("business_subscriptions")
-    .select("access_status")
+   .select("access_status, payment_status, next_payment_due, grace_period_days")
     .eq("business_id", businessId)
     .maybeSingle();
 
@@ -40,9 +40,12 @@ async function checkBusinessSubscriptionAccess(businessId) {
   }
 
   return {
-    allowed: data.access_status === "active",
-    reason: data.access_status
-  };
+  allowed: data.access_status === "active",
+  reason: data.access_status,
+  paymentStatus: data.payment_status,
+  nextPaymentDue: data.next_payment_due,
+  gracePeriodDays: data.grace_period_days
+};
 }
 
 
