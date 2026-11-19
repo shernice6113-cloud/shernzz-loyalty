@@ -1469,3 +1469,85 @@ label[for="showPassword"] {
 #accountHome button:hover {
   transform: translateY(-1px);
 }
+
+/* SHERNZZ LOYALTY — LUXURY STAFF DASHBOARD */
+
+#staffDashboard {
+  background: linear-gradient(145deg, #191919, #0b0b0b);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  color: #f5f0e5;
+}
+
+#staffDashboard h2,
+#staffDashboard h3 {
+  color: #ffffff;
+}
+
+#staffDashboard .eyebrow {
+  color: #d4af37;
+}
+
+#staffDashboard #customerSearch {
+  background: #171717;
+  border: 1px solid #66552e;
+  color: #ffffff;
+}
+
+#staffDashboard #customerSearch:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+}
+
+#staffDashboard .customer-row {
+  background: linear-gradient(145deg, #202020, #131313);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+#staffDashboard .customer-row strong {
+  color: #ffffff;
+}
+
+#staffDashboard .customer-row small {
+  color: #bcbcbc;
+  opacity: 1;
+}
+
+#staffDashboard .add-stamp-button {
+  background: linear-gradient(135deg, #b88a2b, #f1d47a);
+  color: #111111;
+}
+
+#staffDashboard .redeem-button {
+  background: #242018;
+  color: #f1d47a;
+  border: 1px solid #8b7139;
+}
+
+#staffDashboard .customer-history h3 {
+  color: #d4af37;
+}
+
+#staffDashboard .history-item {
+  border-bottom: 1px solid rgba(212, 175, 55, 0.18);
+}
+
+#staffDashboard .history-item strong {
+  color: #ffffff;
+}
+
+#staffDashboard .history-item small {
+  color: #bcbcbc;
+  opacity: 1;
+}
+
+#staffDashboard .primary-button {
+  background: linear-gradient(135deg, #b88a2b, #f1d47a);
+  color: #111111;
+}
+
+#staffDashboard .staff-button {
+  background: #191919;
+  color: #d4af37;
+  border: 1px solid #66552e;
+}
