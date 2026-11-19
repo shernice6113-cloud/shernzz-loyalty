@@ -1410,3 +1410,62 @@ label[for="showPassword"] {
 #accountHome #superAdminButton:hover {
   box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25);
 }
+
+/* SHERNZZ LOYALTY — BUSINESS FORMS & MANAGEMENT */
+
+#accountHome input,
+#accountHome select,
+#accountHome textarea,
+#staffDashboard input,
+#staffDashboard select {
+  background: #171717;
+  color: #ffffff;
+  border: 1px solid #66552e;
+  border-radius: 14px;
+}
+
+#accountHome input:focus,
+#accountHome select:focus,
+#accountHome textarea:focus,
+#staffDashboard input:focus,
+#staffDashboard select:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+}
+
+#accountHome label,
+#staffDashboard label {
+  color: #e8dfca;
+}
+
+#accountHome .logo-cropper {
+  background: #191919;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+#accountHome .logo-cropper h3 {
+  color: #d4af37;
+}
+
+#accountHome .logo-crop-frame {
+  border-color: #d4af37;
+}
+
+#accountHome #logoZoom {
+  accent-color: #d4af37;
+}
+
+#accountHome .page-back-button {
+  color: #d4af37;
+  border: 1px solid #66552e;
+  background: #191919;
+}
+
+#accountHome button:not(.account-signout-button):not(#superAdminButton) {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#accountHome button:hover {
+  transform: translateY(-1px);
+}
