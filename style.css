@@ -1341,3 +1341,72 @@ label[for="showPassword"] {
 .join-card #message {
   color: #e7cb79;
 }
+
+/* SHERNZZ LOYALTY — LUXURY ACCOUNT HOME */
+
+#accountHome {
+  color: #f5f0e5;
+}
+
+#accountHome h1,
+#accountHome h2,
+#accountHome h3 {
+  color: #ffffff;
+}
+
+#accountHome .eyebrow {
+  color: #d4af37;
+}
+
+#accountHome .account-section {
+  padding: 22px;
+  margin: 16px 0;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 20px;
+  background: linear-gradient(145deg, #191919, #101010);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+}
+
+#accountHome .account-section h3,
+#accountHome .account-section h4 {
+  color: #f1d47a;
+}
+
+#accountHome .account-section p,
+#accountHome .account-section small {
+  color: #bcbcbc;
+}
+
+#accountHome .primary-button {
+  color: #111111;
+  background: linear-gradient(135deg, #b88a2b, #f1d47a);
+  box-shadow: 0 10px 28px rgba(212, 175, 55, 0.15);
+}
+
+#accountHome .staff-button {
+  color: #d4af37;
+  border: 1px solid #66552e;
+  background: #191919;
+}
+
+#accountHome .account-signout-button {
+  color: #d4af37;
+  background: rgba(212, 175, 55, 0.07);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+#accountHome .account-signout-button:hover {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: #d4af37;
+}
+
+#accountHome #superAdminButton {
+  color: #111111;
+  background: linear-gradient(135deg, #b88a2b, #f1d47a);
+  border: 1px solid #d4af37;
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.15);
+}
+
+#accountHome #superAdminButton:hover {
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25);
+}
