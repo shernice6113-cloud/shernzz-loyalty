@@ -48,6 +48,39 @@ async function checkBusinessSubscriptionAccess(businessId) {
 };
 }
 
+function showSubscriptionLock(access, role = "staff") {
+  const screen = document.getElementById("subscriptionLockScreen");
+  if (!screen) return;
+
+  const status = document.getElementById("subscriptionLockStatus");
+  const due = document.getElementById("subscriptionLockDue");
+  const message = document.getElementById("subscriptionLockMessage");
+  const contact = document.getElementById("subscriptionContactButton");
+
+  status.textContent =
+    access.reason === "suspended" ? "Suspended" : "Access unavailable";
+
+  due.textContent = access.nextPaymentDue || "Not set";
+
+  if (role === "owner") {
+    message.textContent =
+      "Your business subscription is currently inactive. Renew your subscription to restore access to your dashboard.";
+    contact.textContent = "Request Reactivation";
+    contact.classList.remove("hidden");
+  } else {
+    message.textContent =
+      "This business dashboard is temporarily unavailable. Please contact the business owner.";
+    contact.classList.add("hidden");
+  }
+
+  document.getElementById("staffDashboard")?.classList.add("hidden");
+  document.getElementById("staffCustomerDetail")?.classList.add("hidden");
+  document.getElementById("accountHome")?.classList.add("hidden");
+  document.getElementById("loyaltyCard")?.classList.add("hidden");
+
+  screen.classList.remove("hidden");
+}
+
 
 function rememberPage(page, businessId = null) {
   sessionStorage.setItem(
@@ -1515,14 +1548,18 @@ staffButton.addEventListener("click", async () => {
   const subscriptionAccess =
     await checkBusinessSubscriptionAccess(membership.business_id);
 
-  if (!subscriptionAccess.allowed) {
+  
+if (!subscriptionAccess.allowed) {
+  if (subscriptionAccess.reason === "suspended") {
+    showSubscriptionLock(subscriptionAccess, membership.role);
+  } else {
     showMessage(
-      subscriptionAccess.reason === "suspended"
-        ? "🔒 This business subscription is suspended. Please contact the business owner."
-        : "⚠️ Unable to verify business subscription access. Please try again."
+      "⚠️ Unable to verify business subscription access. Please try again."
     );
-    return;
   }
+  return;
+}
+
 
 
 ownerLogoSettings.classList.toggle(
@@ -1998,14 +2035,18 @@ async function showAccountHome(user) {
         const subscriptionAccess =
           await checkBusinessSubscriptionAccess(membership.business_id);
 
-        if (!subscriptionAccess.allowed) {
-          alert(
-            subscriptionAccess.reason === "suspended"
-              ? "🔒 This business subscription is suspended. Please contact the business owner."
-              : "⚠️ Unable to verify business subscription access. Please try again."
-          );
-          return;
-        }
+        
+if (!subscriptionAccess.allowed) {
+  if (subscriptionAccess.reason === "suspended") {
+    showSubscriptionLock(subscriptionAccess, membership.role);
+  } else {
+    alert(
+      "⚠️ Unable to verify business subscription access. Please try again."
+    );
+  }
+  return;
+}
+
 
         rememberPage("staffDashboard", membership.business_id);
         editingLogoBusinessId = membership.business_id;
@@ -2176,19 +2217,21 @@ if (savedPage?.page === "superAdminPage") {
       const subscriptionAccess =
         await checkBusinessSubscriptionAccess(membership.business_id);
 
-      if (!subscriptionAccess.allowed) {
-        
-        clearRememberedPage();
+      
+if (!subscriptionAccess.allowed) {
+  if (subscriptionAccess.reason === "suspended") {
+    await showAccountHome(session.user);
+    showSubscriptionLock(subscriptionAccess, membership.role);
+  } else {
+    clearRememberedPage();
+    await showAccountHome(session.user);
+    alert(
+      "⚠️ Unable to verify business subscription access. Please try again."
+    );
+  }
+  return;
+}
 
-        await showAccountHome(session.user);
-
-        alert(
-          subscriptionAccess.reason === "suspended"
-            ? "🔒 This business subscription is suspended. Please contact the business owner."
-            : "⚠️ Unable to verify business subscription access. Please try again."
-        );
-        return;
-      }
 
       editingLogoBusinessId = membership.business_id;
       await showAccountHome(session.user);
@@ -2552,4 +2595,38 @@ if (profileNavButton && profileBackButton) {
   window.location.reload();
 });
 }
+
+
+/* SHERNZZ LOYALTY — SUBSCRIPTION LOCK BUTTONS */
+
+const subscriptionLockBackButton =
+  document.getElementById("subscriptionLockBackButton");
+
+const subscriptionContactButton =
+  document.getElementById("subscriptionContactButton");
+
+// Return to Account Home
+subscriptionLockBackButton?.addEventListener("click", async () => {
+  document.getElementById("subscriptionLockScreen")
+    ?.classList.add("hidden");
+
+  clearRememberedPage();
+
+  const { data: { user } } =
+    await supabaseClient.auth.getUser();
+
+  if (user) {
+    await showAccountHome(user);
+  } else {
+    window.location.reload();
+  }
+});
+
+// Request reactivation
+subscriptionContactButton?.addEventListener("click", () => {
+  alert(
+    "Your subscription is currently inactive. Please contact Shernzz Loyalty support to arrange renewal. Your business data is safely preserved."
+  );
+});
+
 startApp();
