@@ -1136,3 +1136,118 @@ label[for="showPassword"] {
   font-size: 14px;
   text-align: center;
 }
+
+/* SHERNZZ LOYALTY — PREMIUM SUBSCRIPTION LOCK */
+
+#subscriptionLockScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #080808;
+  color: #f5f0e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+#subscriptionLockScreen.hidden {
+  display: none !important;
+}
+
+.subscription-lock-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 40px 28px;
+  border: 1px solid #8b7139;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #191919, #0b0b0b);
+  text-align: center;
+  box-shadow: 0 20px 65px rgba(0,0,0,.5);
+  box-sizing: border-box;
+}
+
+.subscription-lock-icon {
+  font-size: 48px;
+  color: #d4af37;
+  margin-bottom: 12px;
+}
+
+.subscription-lock-brand {
+  color: #d4af37;
+  font-size: 12px;
+  letter-spacing: 4px;
+  font-weight: 700;
+}
+
+#subscriptionLockTitle {
+  font-size: 27px;
+  line-height: 1.3;
+  margin: 22px 0 14px;
+  color: #fff;
+}
+
+#subscriptionLockMessage {
+  color: #bcbcbc;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.subscription-lock-details {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  margin: 28px 0;
+  padding: 22px;
+  border: 1px solid #383024;
+  border-radius: 12px;
+  text-align: left;
+  font-size: 13px;
+}
+
+.subscription-lock-details span {
+  color: #aaa;
+}
+
+.subscription-lock-details strong {
+  color: #d4af37;
+  text-align: right;
+}
+
+.subscription-lock-reassurance {
+  color: #999;
+  font-size: 12px;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+#subscriptionContactButton {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #b88a2b, #f1d47a);
+  border: none;
+  border-radius: 10px;
+  color: #111;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#subscriptionLockBackButton {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  background: transparent;
+  border: 1px solid #66552e;
+  border-radius: 10px;
+  color: #d4af37;
+  cursor: pointer;
+}
+
+.subscription-lock-footer {
+  margin-top: 30px;
+  color: #777;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
