@@ -1551,3 +1551,69 @@ label[for="showPassword"] {
   color: #d4af37;
   border: 1px solid #66552e;
 }
+
+/* SHERNZZ LOYALTY — LUXURY SUPER ADMIN */
+
+#superAdminDashboard {
+  color: #f5f0e5;
+  background: linear-gradient(145deg, #191919, #0b0b0b);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 24px;
+  padding: 24px;
+}
+
+#superAdminDashboard h1,
+#superAdminDashboard h2,
+#superAdminDashboard h3,
+#superAdminDashboard h4 {
+  color: #f1d47a;
+}
+
+#superAdminDashboard input,
+#superAdminDashboard select,
+#superAdminDashboard textarea {
+  width: 100%;
+  max-width: 100%;
+  background: #171717;
+  color: #ffffff;
+  border: 1px solid #66552e;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+#superAdminDashboard input:focus,
+#superAdminDashboard select:focus,
+#superAdminDashboard textarea:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+}
+
+#superAdminDashboard label {
+  color: #e8dfca;
+}
+
+#superAdminDashboard .primary-button {
+  color: #111111;
+  background: linear-gradient(135deg, #b88a2b, #f1d47a);
+}
+
+#superAdminDashboard .staff-button {
+  color: #d4af37;
+  background: #191919;
+  border: 1px solid #66552e;
+}
+
+#superAdminDashboard #adminExemptionControls {
+  padding: 18px;
+  background: #151515;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 16px;
+}
+
+#superAdminDashboard #adminExemptionControls select,
+#superAdminDashboard #adminExemptionControls input[type="date"] {
+  background: #171717;
+  color: #ffffff;
+  border: 1px solid #66552e;
+}
