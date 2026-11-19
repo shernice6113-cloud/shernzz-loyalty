@@ -1795,3 +1795,57 @@ label[for="showPassword"] {
   border-color: #d4af37;
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
 }
+
+/* SHERNZZ LOYALTY — FREE TRIAL NOTICE */
+
+.trial-info-card {
+  margin: 28px 0 18px;
+  padding: 24px 20px;
+  background: linear-gradient(145deg, #191919, #0b0b0b);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 20px;
+  color: #f5f0e5;
+}
+
+.trial-info-icon {
+  color: #d4af37;
+  font-size: 36px;
+  text-align: center;
+}
+
+.trial-info-card h3 {
+  color: #f1d47a;
+  font-size: 22px;
+  text-align: center;
+  margin: 12px 0;
+}
+
+.trial-info-card p {
+  color: #c9c3b8;
+  font-size: 14px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.trial-info-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.trial-info-card li {
+  padding: 9px 0;
+  color: #f5f0e5;
+  font-size: 14px;
+}
+
+.trial-info-disclaimer {
+  padding-top: 16px;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+#createBusinessPage #saveBusinessButton {
+  background: linear-gradient(135deg, #b88a2b, #f1d47a);
+  color: #111111;
+  font-weight: 800;
+}
