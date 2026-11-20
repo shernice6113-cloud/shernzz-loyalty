@@ -2027,8 +2027,10 @@ async function showAccountHome(user) {
 
     memberships.forEach((membership) => {
       
+let trialStatus = null;
+
 if (membership.role === "owner") {
-  const trialStatus = document.createElement("p");
+  trialStatus = document.createElement("p");
   trialStatus.style.color = "#D4AF37";
   trialStatus.style.fontSize = "13px";
   trialStatus.style.margin = "8px 0";
@@ -2056,7 +2058,7 @@ if (membership.role === "owner") {
         : "✨ Your free trial has ended";
     });
 
-  businessAccountList.appendChild(trialStatus);
+
 }
 
       const businessButton = document.createElement("button");
@@ -2143,6 +2145,9 @@ staffBusinessName.textContent =
       });
 
       businessAccountList.appendChild(businessButton);
+      if (membership.role === "owner") {
+  businessAccountList.appendChild(trialStatus);
+}
     });
   }
  if (loyaltyAccountList) {
