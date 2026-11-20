@@ -572,10 +572,31 @@ if (lookupError) throw lookupError;
  confirmPaymentButton.disabled = false;
 return;
 }
+const { data: trialInfo, error: trialError } =
+  await supabaseClient
+    .from("business_subscriptions")
+    .select("payment_status, trial_ends_at")
+    .eq("business_id", businessId)
+    .single();
 
-    const paymentDate = new Date();
+if (trialError) throw trialError;
 
-const nextPaymentDate = new Date(paymentDate);
+const trialEnd = trialInfo.trial_ends_at
+  ? new Date(trialInfo.trial_ends_at)
+  : null;
+
+const isActiveTrial =
+  trialInfo.payment_status === "trial" &&
+  trialEnd &&
+  trialEnd.getTime() > Date.now();
+   const paymentDate = new Date();
+
+const subscriptionStartDate = isActiveTrial
+  ? new Date(trialEnd)
+  : paymentDate;
+
+const nextPaymentDate = new Date(subscriptionStartDate);
+
 nextPaymentDate.setUTCDate(
   nextPaymentDate.getUTCDate() + 30
 );
@@ -587,7 +608,7 @@ const nextPaymentDue =
         .update({
  payment_status: "paid",
 access_status: "active",
-subscription_start_date: paymentDate.toISOString().split("T")[0],
+subscription_start_date: subscriptionStartDate.toISOString().split("T")[0],
 next_payment_due: nextPaymentDue
 })
         .eq("business_id", businessId)
@@ -2144,9 +2165,98 @@ staffBusinessName.textContent =
         await loadStaffRecentActivity(membership.business_id);
       });
 
-      businessAccountList.appendChild(businessButton);
-      if (membership.role === "owner") {
+    businessAccountList.appendChild(businessButton);
+
+if (membership.role === "owner") {
   businessAccountList.appendChild(trialStatus);
+
+  const choosePlanButton = document.createElement("button");
+  choosePlanButton.type = "button";
+  choosePlanButton.className = "staff-button";
+  choosePlanButton.textContent = "💳 Choose Subscription Plan";
+
+ choosePlanButton.addEventListener("click", async () => {
+  const plans = [
+  { code: "starter", name: "Starter", limit: "25 customers", price: 5 },
+  { code: "growth", name: "Growth", limit: "50 customers", price: 10 },
+  { code: "pro", name: "Pro", limit: "75 customers", price: 15 },
+  { code: "unlimited", name: "Unlimited", limit: "Unlimited customers", price: 20 }
+];
+
+ const planDetails = plans
+  .map((plan, index) =>
+    `${index + 1}. ${plan.name} — ${plan.limit} — €${plan.price}/month`
+  )
+  .join("\n");
+
+const selection = prompt(
+  "👑 SHERNZZ LOYALTY SUBSCRIPTIONS\n\n" +
+  planDetails +
+  "\n\nEnter the number of your chosen plan (1–4):"
+);
+
+if (selection === null) return;
+
+const selectedNumber = Number(selection.trim());
+
+if (
+  !Number.isInteger(selectedNumber) ||
+  selectedNumber < 1 ||
+  selectedNumber > 4
+) {
+  alert("Please enter a number between 1 and 4.");
+  return;
+}
+
+const selectedPlan = plans[selectedNumber - 1];
+
+const confirmed = confirm(
+  `Request the ${selectedPlan.name} plan for €${selectedPlan.price}/month?\n\n` +
+  "Your subscription will only be activated after payment is confirmed."
+);
+
+if (!confirmed) return;
+
+try {
+  const { data: existingRequest, error: checkError } =
+    await supabaseClient
+      .from("subscription_plan_requests")
+      .select("id")
+      .eq("business_id", membership.business_id)
+      .eq("status", "pending")
+      .maybeSingle();
+
+  if (checkError) throw checkError;
+
+  if (existingRequest) {
+    alert(
+      "You already have a pending subscription request. " +
+      "Please wait for payment confirmation."
+    );
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("subscription_plan_requests")
+    .insert({
+      business_id: membership.business_id,
+      plan_code: selectedPlan.code
+    });
+
+  if (error) throw error;
+
+  alert(
+    `Your ${selectedPlan.name} plan request has been submitted! 💗\n\n` +
+    "Please wait for payment confirmation."
+  );
+
+} catch (error) {
+  console.error("Subscription request failed:", error);
+  alert("Unable to submit your request. Please try again.");
+}
+});
+
+  businessAccountList.appendChild(choosePlanButton);
 }
     });
   }
