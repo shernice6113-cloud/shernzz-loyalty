@@ -2026,6 +2026,39 @@ async function showAccountHome(user) {
     businessAccountList.innerHTML = "";
 
     memberships.forEach((membership) => {
+      
+if (membership.role === "owner") {
+  const trialStatus = document.createElement("p");
+  trialStatus.style.color = "#D4AF37";
+  trialStatus.style.fontSize = "13px";
+  trialStatus.style.margin = "8px 0";
+
+  supabaseClient
+    .from("business_subscriptions")
+    .select("payment_status, trial_ends_at")
+    .eq("business_id", membership.business_id)
+    .maybeSingle()
+    .then(({ data, error }) => {
+      if (error || data?.payment_status !== "trial" || !data.trial_ends_at) {
+        return;
+      }
+
+      const remaining = Math.max(
+        0,
+        Math.ceil(
+          (new Date(data.trial_ends_at).getTime() - Date.now()) /
+          86400000
+        )
+      );
+
+      trialStatus.textContent = remaining > 0
+        ? `✨ Free Trial — ${remaining} day${remaining === 1 ? "" : "s"} remaining`
+        : "✨ Your free trial has ended";
+    });
+
+  businessAccountList.appendChild(trialStatus);
+}
+
       const businessButton = document.createElement("button");
       businessButton.type = "button";
       businessButton.className = "staff-button";
