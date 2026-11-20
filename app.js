@@ -511,126 +511,117 @@ if (saveBillingDateButton) {
 }
 
 
+
 const confirmPaymentButton =
   document.getElementById("confirmPaymentButton");
 
 if (confirmPaymentButton) {
   confirmPaymentButton.addEventListener("click", async () => {
-    const businessId =
-      document.getElementById("exemptionBusinessSelect")?.value;
-
-    if (!businessId) {
-      alert("Please select a business first.");
-      return;
-    }
-
-    const confirmed = confirm(
-      "Confirm that payment has been received for this business?"
+    const businessId = Number(
+      document.getElementById("exemptionBusinessSelect")?.value
     );
 
-    if (!confirmed) return;
-
-    const { data: { user }, error: authError } =
-      await supabaseClient.auth.getUser();
-
-    if (authError || !user) {
-      alert("Please sign in again.");
-      return;
-    }
-
-    const { data: admin, error: adminError } =
-      await supabaseClient
-        .from("platform_admins")
-        .select("user_id")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-    if (adminError || !admin) {
-      alert("Access denied. Super Admins only.");
+    if (!Number.isSafeInteger(businessId) || businessId <= 0) {
+      alert("Please select a business first.");
       return;
     }
 
     confirmPaymentButton.disabled = true;
 
     try {
-      const { data: subscription, error: lookupError } =
-  await supabaseClient
-    .from("business_subscriptions")
-    .select("next_payment_due, subscription_start_date, payment_status")
-    .eq("business_id", businessId)
-    .eq("exemption_type", "none")
-    .single();
+      const {
+        data: { user },
+        error: authError
+      } = await supabaseClient.auth.getUser();
 
-if (lookupError) throw lookupError;
-      if (
-  subscription.payment_status === "paid" &&
-  subscription.next_payment_due &&
-  subscription.next_payment_due >=
-    new Date().toISOString().split("T")[0]
-) {
-  alert("This business already has a paid subscription. Verify a new payment before extending it.");
- confirmPaymentButton.disabled = false;
-return;
-}
-const { data: trialInfo, error: trialError } =
-  await supabaseClient
-    .from("business_subscriptions")
-    .select("payment_status, trial_ends_at")
-    .eq("business_id", businessId)
-    .single();
-
-if (trialError) throw trialError;
-
-const trialEnd = trialInfo.trial_ends_at
-  ? new Date(trialInfo.trial_ends_at)
-  : null;
-
-const isActiveTrial =
-  trialInfo.payment_status === "trial" &&
-  trialEnd &&
-  trialEnd.getTime() > Date.now();
-   const paymentDate = new Date();
-
-const subscriptionStartDate = isActiveTrial
-  ? new Date(trialEnd)
-  : paymentDate;
-
-const nextPaymentDate = new Date(subscriptionStartDate);
-
-nextPaymentDate.setUTCDate(
-  nextPaymentDate.getUTCDate() + 30
-);
-
-const nextPaymentDue =
-  nextPaymentDate.toISOString().split("T")[0];
-      const { data, error } = await supabaseClient
-        .from("business_subscriptions")
-        .update({
- payment_status: "paid",
-access_status: "active",
-subscription_start_date: subscriptionStartDate.toISOString().split("T")[0],
-next_payment_due: nextPaymentDue
-})
-        .eq("business_id", businessId)
-        .eq("exemption_type", "none")
-        .select("business_id");
-
-      if (error) throw error;
-
-      if (!data?.length) {
-        throw new Error("No eligible subscription was updated.");
+      if (authError || !user) {
+        throw new Error("Please sign in again.");
       }
 
-      alert("Payment confirmed! Business access restored.");
+      const { data: admin, error: adminError } =
+        await supabaseClient
+          .from("platform_admins")
+          .select("user_id")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+      if (adminError || !admin) {
+        throw new Error("Access denied. Super Admins only.");
+      }
+
+      // Find the business owner's pending request.
+      const { data: planRequest, error: requestError } =
+        await supabaseClient
+          .from("subscription_plan_requests")
+          .select("id, plan_code")
+          .eq("business_id", businessId)
+          .eq("status", "pending")
+          .maybeSingle();
+
+      if (requestError) throw requestError;
+
+      if (!planRequest) {
+        throw new Error(
+          "No pending subscription plan request found."
+        );
+      }
+
+      // Get the official plan details.
+      const { data: selectedPlan, error: planError } =
+        await supabaseClient
+          .from("subscription_plans")
+          .select("plan_code, monthly_price")
+          .eq("plan_code", planRequest.plan_code)
+          .eq("is_active", true)
+          .single();
+
+      if (planError) throw planError;
+
+      const confirmed = confirm(
+        `CONFIRM PAYMENT\n\n` +
+        `Business ID: ${businessId}\n` +
+        `Plan: ${selectedPlan.plan_code}\n` +
+        `Amount: €${selectedPlan.monthly_price}\n\n` +
+        `Only continue if you have actually received ` +
+        `and verified this payment.\n\n` +
+        `Confirm payment?`
+      );
+
+      if (!confirmed) return;
+
+      // Secure, atomic database confirmation.
+      const { error: paymentError } =
+        await supabaseClient.rpc(
+          "confirm_subscription_plan_payment",
+          {
+            p_business_id: businessId
+          }
+        );
+
+      if (paymentError) throw paymentError;
+
+      alert(
+        "Payment confirmed successfully! 💗\n\n" +
+        "The requested subscription plan has been applied.\n" +
+        "Any remaining free-trial days are preserved."
+      );
+
       await loadAdminSubscriptions();
+
     } catch (error) {
       console.error("Payment confirmation failed:", error);
-      alert("Unable to confirm payment. Please try again.");
+
+      alert(
+        "Unable to confirm payment:\n\n" +
+        (error.message || "Please try again.")
+      );
+
     } finally {
       confirmPaymentButton.disabled = false;
     }
   });
 }
+
 
 const backFromAdminButton = document.getElementById("backFromAdminButton");
 
